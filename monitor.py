@@ -21,10 +21,10 @@ with open(AIO_KEY_FILE, 'r') as file:
 
 AIO_FEED_PM_SMALL_NAME='pm-2-dot-5'
 AIO_FEED_PM_SMALL_ROLLING_MEAN='pm-2-dot-5-rolling-mean'
-AIO_FEED_PM_SMALL_DAILY_MEAN='pm-2-dot-5-daily-mean'
+AIO_FEED_PM_SMALL_24H_MEAN='pm-2-dot-5-24h-mean'
 AIO_FEED_PM_LARGE_NAME='pm-10'
 AIO_FEED_PM_LARGE_ROLLING_MEAN='pm-10-rolling-mean'
-AIO_FEED_PM_LARGE_DAILY_MEAN='pm-10-daily-mean'
+AIO_FEED_PM_LARGE_24H_MEAN='pm-10-24h-mean'
 
 ser = serial.Serial(DEVICE)
 aio = Client(AIO_USER, AIO_KEY)
@@ -36,10 +36,10 @@ aio = Client(AIO_USER, AIO_KEY)
 
 pm_small_feed = aio.feeds(AIO_FEED_PM_SMALL_NAME)
 pm_small_feed_rolling = aio.feeds(AIO_FEED_PM_SMALL_ROLLING_MEAN)
-pm_small_feed_daily = aio.feeds(AIO_FEED_PM_SMALL_DAILY_MEAN)
+pm_small_feed_24h = aio.feeds(AIO_FEED_PM_SMALL_24H_MEAN)
 pm_large_feed = aio.feeds(AIO_FEED_PM_LARGE_NAME)
 pm_large_feed_rolling = aio.feeds(AIO_FEED_PM_LARGE_ROLLING_MEAN)
-pm_large_feed_daily = aio.feeds(AIO_FEED_PM_LARGE_DAILY_MEAN)
+pm_large_feed_24h = aio.feeds(AIO_FEED_PM_LARGE_24H_MEAN)
 
 # TODO: Fetch any stored averages
 sample=0
@@ -73,8 +73,8 @@ while True:
 
     if sample == (60*60*24)/SAMPLE_TIME:
         print(f"{sample}: 24hMean pm25 = {pm_small_mean}  pm10 = {pm_large_mean}")
-        aio.send_data(pm_small_feed_daily.key, pm_small_mean)
-        aio.send_data(pm_large_feed_daily.key, pm_large_mean)
+        aio.send_data(pm_small_feed_24h.key, pm_small_mean)
+        aio.send_data(pm_large_feed_24h.key, pm_large_mean)
         pm_small_total = 0
         pm_large_total = 0
 
