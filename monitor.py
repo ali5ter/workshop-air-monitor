@@ -56,10 +56,11 @@ while True:
         data.append(datum)
         
     sample += 1
+    ts = time.time()
     pm_small = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
     pm_large = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
 
-    print(f"{sample}: {SAMPLE_TIME}sSample pm25 = {pm_small}  pm10 = {pm_large}")
+    print(f"{sample}@{ts}: {SAMPLE_TIME}sSample pm25 = {pm_small}  pm10 = {pm_large}")
     aio.send_data(pm_small_feed.key, pm_small)
     aio.send_data(pm_large_feed.key, pm_large)
 
@@ -67,15 +68,13 @@ while True:
     pm_large_total += pm_large
     pm_small_mean = pm_small_total/sample
     pm_large_mean = pm_large_total/sample
-    print(f"{sample}: RollingMean pm25 = {pm_small_mean}  pm10 = {pm_large_mean}")
+    print(f"\tRollingMean pm25 = {pm_small_mean}  pm10 = {pm_large_mean}")
     aio.send_data(pm_small_feed_rolling.key, pm_small_mean)
     aio.send_data(pm_large_feed_rolling.key, pm_large_mean)
 
     if sample == (60*60*24)/SAMPLE_TIME:
-        print(f"{sample}: 24hMean pm25 = {pm_small_mean}  pm10 = {pm_large_mean}")
+        print(f"\t24hMean pm25 = {pm_small_mean}  pm10 = {pm_large_mean}")
         aio.send_data(pm_small_feed_24h.key, pm_small_mean)
         aio.send_data(pm_large_feed_24h.key, pm_large_mean)
-        pm_small_total = 0
-        pm_large_total = 0
 
     time.sleep(SAMPLE_TIME)
