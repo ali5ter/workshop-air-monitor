@@ -57,10 +57,10 @@ f_temp = aio.feeds(AIO_FEED_TEMP)
 
 # TODO: Fetch any stored averages
 sample=0
-pm_small_total=0
-pm_large_total=0
-pm_small_mean=0
-pm_large_mean=0
+total_pm_large = 0
+ave_pm_large = 0
+total_pm_small = 0
+ave_pm_small =0
 
 while True:
 
@@ -73,7 +73,8 @@ while True:
     ts = time.time()
     pm_small = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
     pm_large = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
-    temp = bme680.temperature + temperature_offset
+    tempC = bme680.temperature + temperature_offset
+    tempF = (tempC * 1.8) + 32
     gas = bme680.gas
     humidity = bme680.relative_humidity
     pressure = bme680.pressure
@@ -81,26 +82,30 @@ while True:
 
     print(f"{sample}@{ts}: Current sensor outputs")
     print(f"\t PM2.5 = {pm_small}  PM10 = {pm_large}")
-    print("\t Temperature: %0.1f C" % temp)
+    print("\t Temperature: %0.1f C (%0.1f F)" % (tempC, tempF))
     print("\t Gas: %d ohm" % gas)
     print("\t Humidity: %0.1f %%" % humidity)
     print("\t Pressure: %0.3f hPa" % pressure)
     print("\t Altitude = %0.2f meters" % altitude)
 
-    aio.send_data(pm_small_feed.key, pm_small)
-    aio.send_data(pm_large_feed.key, pm_large)
+    aio.send_data(f_pm_small.key, pm_small)
+    aio.send_data(f_pm_large.key, pm_large)
+    aio.send_data(f_temp.key, tempF)
+    aio.send_data(f_gas.key, gas)
+    aio.send_data(f_humidity.key, humidity)
+    aio.send_data(f_pressure.key, pressure)
 
-    pm_small_total += pm_small
-    pm_large_total += pm_large
-    pm_small_mean = pm_small_total/sample
-    pm_large_mean = pm_large_total/sample
-    print(f"\tRollingMean pm25 = {pm_small_mean}  pm10 = {pm_large_mean}")
-    aio.send_data(pm_small_feed_rolling.key, pm_small_mean)
-    aio.send_data(pm_large_feed_rolling.key, pm_large_mean)
+    total_pm_small += pm_small
+    total_pm_large += pm_large
+    ave_pm_small = total_pm_small/sample
+    ave_pm_large = total_pm_large/sample
+    print(f"\t PM2.5 ave = {ave_pm_small}  PM10 ave = {ave_pm_large}")
+    aio.send_data(f_pm_small_rolling.key, ave_pm_small)
+    aio.send_data(f_pm_large_rolling.key, ave_pm_large)
 
     if sample == (60*60*24)/SAMPLE_TIME:
-        print(f"\t24hMean pm25 = {pm_small_mean}  pm10 = {pm_large_mean}")
-        aio.send_data(pm_small_feed_24h.key, pm_small_mean)
-        aio.send_data(pm_large_feed_24h.key, pm_large_mean)
+        print(f"\t PM2.5 24h ave = {ave_pm_small}  PM10 24h ave = {ave_pm_large}")
+        aio.send_data(f_pm_small_24h.key, ave_pm_small)
+        aio.send_data(f_pm_large_24h.key, ave_pm_large)
 
     time.sleep(SAMPLE_TIME)

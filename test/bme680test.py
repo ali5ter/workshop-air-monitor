@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Test BME680
-# @author Alister Lewis-Bowen <alister@lewis-bowen.org>
+# Test BME680 sensor works
+# @ref https://learn.adafruit.com/adafruit-bme680-humidity-temperature-barometic-pressure-voc-gas
 
 import board
 import adafruit_bme680
+
 i2c = board.I2C()
 sensor = adafruit_bme680.Adafruit_BME680_I2C(i2c)
 
