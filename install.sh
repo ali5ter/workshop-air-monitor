@@ -7,15 +7,19 @@ USER="${1:-$(whoami)}"
 sudo apt upgrade && sudo apt upgrade
 if ! type python3 >/dev/null 2>/dev/null; then
     sudo apt install python3-pip
-    sudo pip3 install --upgrade setuptools
+    pip3 install --upgrade setuptools
 fi
 
 # Install Adafruit IO API ----------------------------------------------------
 
-sudo pip3 install --upgrade adafruit-io
+pip3 install --upgrade adafruit-io
 echo
 echo "✅ adafruit-io python lib installed."
 echo
+
+# Fix Debian 11 (bullseye) issue with RPi.GPIO -------------------------------
+# @ref: https://dietpi.com/phpbb/viewtopic.php?p=38481
+grep -q bullseye /etc/os-release || pip3 install RPi.GPIO==0.7.1a4
 
 # Install Adafruit Blinka lib to talk to CircuitPython API -------------------
 
@@ -28,7 +32,7 @@ wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/m
 sudo python3 raspi-blinka.py
 rm raspi-blinka.py*
 
-sudo pip3 install --upgrade adafruit_blinka
+pip3 install --upgrade adafruit_blinka
 
 sudo usermod -aG i2c "$USER"
 sudo usermod -aG spi "$USER"
@@ -47,7 +51,7 @@ echo
 
 # Dependencies for the PM sensor ---------------------------------------------
 
-sudo pip3 install --upgrade pyserial 
+pip3 install --upgrade pyserial 
 sudo usermod -aG dialout "$USER"
 echo
 echo "✅ pyserial python lib installed."
@@ -55,9 +59,9 @@ echo
 
 # Dependencies for the Environmental sensor ----------------------------------
 
-sudo pip3 install adafruit-circuitpython-bme680
+pip3 install adafruit-circuitpython-bme680
 echo
 echo "✅ adafruit BME680 library python lib installed."
 echo
 
-sudo reboot
+# sudo reboot
