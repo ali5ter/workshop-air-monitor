@@ -60,4 +60,4 @@ echo
 echo "✅ adafruit BME680 library python lib installed."
 echo
 
-# Post install instructions --------------------------------------------------
+sudo reboot
