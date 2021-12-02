@@ -31,12 +31,33 @@ AIO_FEED_PRESSURE='garage-env.pressure'
 AIO_FEED_TEMP='garage-env.temp'
 aio = Client(AIO_USER, AIO_KEY)
 
+AW_URL_BASE='http://dataservice.accuweather.com'
+AW_URL_CONDITIONS=AW_URL_BASE + '/currentconditions/v1/{0}?apikey={1}&details=true'
+AW_KEY_FILE=os.environ['HOME'] + '/.config/accuweather-key'
+with open(AW_KEY_FILE, 'r') as file:
+    AW_KEY = file.read().replace('\n', '')
+# Found using /locations/v1/cities/search Accuweather API call
+AW_LOCATION_KEY='329319'    # Cambridge, MA
+# TODO: Fetch pressure for each read of BME680 sensor
+try:
+    r = requests.get(AW_URL_CONDITIONS.format(AW_LOCATION_KEY, AW_KEY))
+    r.raise_for_status()
+except HTTPError as http_err:
+    print(f'HTTP error occurred: {http_err}')
+except Exception as err:
+    print(f'Other error occurred: {err}')
+else:
+    json_data = json.loads(r.text)
+    for p in json_data:
+        pressure=p["Pressure"]['Metric']['Value']
+
 DEVICE='/dev/ttyUSB0'
 ser = serial.Serial(DEVICE)
 
 i2c = board.I2C()
 bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c, debug=False)
-bme680.sea_level_pressure = 1011.1
+# TODO: Set pressure for each read of BME680 sensor
+bme680.sea_level_pressure = pressure
 temperature_offset = -5
 
 # TODO:Check feed axists
