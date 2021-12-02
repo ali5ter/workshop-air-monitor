@@ -6,9 +6,12 @@
 
 import os
 import time
+import requests
+import json
 import serial
 import board
 import adafruit_bme680
+from urllib.error import HTTPError
 from Adafruit_IO import Client
 
 SAMPLE_TIME=60
@@ -21,6 +24,7 @@ with open(AIO_KEY_FILE, 'r') as file:
     AIO_KEY = file.read().replace('\n', '')
 AIO_FEED_GAS='garage-env.gas'
 AIO_FEED_HUMIDITY='garage-env.humidity'
+AIO_FEED_HUMIDITY_ROLLING_AVE='garage-env.humidity-rolling-ave'
 AIO_FEED_PM_LARGE='garage-env.pm10'
 AIO_FEED_PM_LARGE_ROLLING_AVE='garage-env.pm10-rolling-ave'
 AIO_FEED_PM_LARGE_24H_AVE='garage-env.pm10-24h-ave'
@@ -28,7 +32,9 @@ AIO_FEED_PM_SMALL='garage-env.pm2-dot-5'
 AIO_FEED_PM_SMALL_ROLLING_AVE='garage-env.pm2-dot-5-rolling-ave'
 AIO_FEED_PM_SMALL_24H_AVE='garage-env.pm2-dot-5-24h-ave'
 AIO_FEED_PRESSURE='garage-env.pressure'
+AIO_FEED_PRESSURE_ROLLING_AVE='garage-env.pressure-rolling-ave'
 AIO_FEED_TEMP='garage-env.temp'
+AIO_FEED_TEMP_ROLLING_AVE='garage-env.temp-rolling-ave'
 aio = Client(AIO_USER, AIO_KEY)
 
 AW_URL_BASE='http://dataservice.accuweather.com'
@@ -50,6 +56,7 @@ else:
     json_data = json.loads(r.text)
     for p in json_data:
         pressure=p["Pressure"]['Metric']['Value']
+print(f"Current pressure is {pressure} hPa or mb")
 
 DEVICE='/dev/ttyUSB0'
 ser = serial.Serial(DEVICE)
@@ -66,6 +73,7 @@ temperature_offset = -5
 #     print('Feed: {0}'.format(f.name))
 f_gas = aio.feeds(AIO_FEED_GAS)
 f_humidity = aio.feeds(AIO_FEED_HUMIDITY)
+f_humidity_rolling = aio.feeds(AIO_FEED_HUMIDITY_ROLLING_AVE)
 f_pm_large = aio.feeds(AIO_FEED_PM_LARGE)
 f_pm_large_rolling = aio.feeds(AIO_FEED_PM_LARGE_ROLLING_AVE)
 f_pm_large_24h = aio.feeds(AIO_FEED_PM_LARGE_24H_AVE)
@@ -73,15 +81,22 @@ f_pm_small = aio.feeds(AIO_FEED_PM_SMALL)
 f_pm_small_rolling = aio.feeds(AIO_FEED_PM_SMALL_ROLLING_AVE)
 f_pm_small_24h = aio.feeds(AIO_FEED_PM_SMALL_24H_AVE)
 f_pressure = aio.feeds(AIO_FEED_PRESSURE)
+f_pressure_rolling = aio.feeds(AIO_FEED_PRESSURE_ROLLING_AVE)
 f_temp = aio.feeds(AIO_FEED_TEMP)
-
+f_temp_rolling = aio.feeds(AIO_FEED_TEMP_ROLLING_AVE)
 
 # TODO: Fetch any stored averages
 sample=0
+total_humidity = 0
+ave_humidity = 0
 total_pm_large = 0
 ave_pm_large = 0
 total_pm_small = 0
-ave_pm_small =0
+ave_pm_small = 0
+total_pressure = 0
+ave_pressure = 0
+total_temp = 0
+ave_temp = 0
 
 while True:
 
@@ -123,6 +138,17 @@ while True:
     print(f"\t PM2.5 ave = {ave_pm_small}  PM10 ave = {ave_pm_large}")
     aio.send_data(f_pm_small_rolling.key, ave_pm_small)
     aio.send_data(f_pm_large_rolling.key, ave_pm_large)
+
+    total_humidity += humidity
+    total_pressure += pressure
+    total_temp += tempF
+    ave_humidity = total_humidity/sample
+    ave_pressure = total_pressure/sample
+    ave_temp = total_temp/sample
+    print(f"\t Humidity ave = {ave_humidity}  Pressure ave = {ave_pressure}  Temperature ave = {ave_temp}")
+    aio.send_data(f_humidity_rolling.key, ave_humidity)
+    aio.send_data(f_pressure_rolling.key, ave_pressure)
+    aio.send(f_temp_rolling.key, ave_temp)
 
     if sample == (60*60*24)/SAMPLE_TIME:
         print(f"\t PM2.5 24h ave = {ave_pm_small}  PM10 24h ave = {ave_pm_large}")
