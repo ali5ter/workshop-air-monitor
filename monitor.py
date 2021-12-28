@@ -31,8 +31,8 @@ args = vars(all_args.parse_args())
 
 # Monitor configuration
 LOOP_DELAY = 5
-SAMPLE_TIME = 60/LOOP_DELAY
-SAMPLES_DAY = (60*60*24)/LOOP_DELAY
+SAMPLE_TIME = int(60/LOOP_DELAY)
+SAMPLES_DAY = int((60*60*24)/LOOP_DELAY)
 SERIAL_DEVICE = '/dev/ttyUSB0'
 BME680_TEMP_OFFSET = -5
 PIR_PIN = board.D4
@@ -46,7 +46,7 @@ with open(AW_KEY_FILE, 'r') as file:
 # Found using /locations/v1/cities/search Accuweather API call
 AW_LOCATION_KEY = '329319'    # Cambridge, MA
 AW_CALL_LIMIT = 50 # Free licence limited to 50 API calls per day
-AW_SAMPLE_TIME = SAMPLES_DAY/AW_CALL_LIMIT
+AW_SAMPLE_TIME = int(SAMPLES_DAY/AW_CALL_LIMIT)
 
 # Adafruit configuration
 AIO_USER = 'ali5ter'
