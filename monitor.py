@@ -14,19 +14,25 @@ import board
 import digitalio
 import adafruit_bme680
 from urllib.error import HTTPError
+from datetime import datetime
 from Adafruit_IO import Client, Feed, Group
 
-# Set up input args
+# Parse invocation args
 all_args = argparse.ArgumentParser(
     description='Monitor sensors connected to RPi measuring environmental conditions'
 )
-all_args.add_argument('-I', '--init', action="store_true", default=False, help='Initialize the Adafruit IO feeds')
+all_args.add_argument(
+    '-I', '--init',
+    action="store_true", 
+    default=False, 
+    help='Initialize the Adafruit IO feeds'
+)
 args = vars(all_args.parse_args())
 
 # Monitor configuration
 LOOP_DELAY = 5
 SAMPLE_TIME = 60/LOOP_DELAY
-SAMPLES_DAY = ((60*60*24)/SAMPLE_TIME)/LOOP_DELAY
+SAMPLES_DAY = (60*60*24)/LOOP_DELAY
 SERIAL_DEVICE = '/dev/ttyUSB0'
 BME680_TEMP_OFFSET = -5
 PIR_PIN = board.D4
@@ -40,7 +46,7 @@ with open(AW_KEY_FILE, 'r') as file:
 # Found using /locations/v1/cities/search Accuweather API call
 AW_LOCATION_KEY = '329319'    # Cambridge, MA
 AW_CALL_LIMIT = 50 # Free licence limited to 50 API calls per day
-AW_SAMPLE_TIME = ((60*60*24)/AW_CALL_LIMIT)/LOOP_DELAY
+AW_SAMPLE_TIME = SAMPLES_DAY/AW_CALL_LIMIT
 
 # Adafruit configuration
 AIO_USER = 'ali5ter'
@@ -112,17 +118,19 @@ if AIO_RECREATE_FEEDS:
         print(f"Creating feed for {name}")
         feed = Feed(name=name)
         AIO_FEEDS[name] = aio.create_feed(feed, group_key=AIO_GROUP)
-    
 else:
     group = aio.groups(AIO_GROUP)
     for feed in group.feeds:
         print(f"Connecting feed for {feed.name}")
         AIO_FEEDS[feed.name] = aio.feeds(feed.key)
 
+# Sample loop ----------------------------------------------------------------
+
 while True:
 
     loop += 1
-    ts = time.time()
+    dt = datetime.now()
+    ts = dt.strftime('%x %X')
 
     # Fetch current weather conditions ---------------------------------------
 
@@ -239,5 +247,6 @@ while True:
         aio.send_data(AIO_FEEDS['motion'].key, 0)
     pir_old_value = pir_current_value
 
+    # Cycle ------------------------------------------------------------------
 
     time.sleep(LOOP_DELAY)
