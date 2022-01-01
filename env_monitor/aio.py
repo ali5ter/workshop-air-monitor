@@ -1,5 +1,5 @@
-
 import os
+
 from Adafruit_IO import Client, Feed, Group
 
 class AIO(object):

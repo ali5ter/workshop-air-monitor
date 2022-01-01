@@ -1,6 +1,6 @@
-
 import board
 import digitalio
+
 from datetime import datetime
 
 class PIR(object):

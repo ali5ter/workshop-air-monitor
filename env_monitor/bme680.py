@@ -1,6 +1,7 @@
 
 import board
 import adafruit_bme680
+
 from datetime import datetime
 
 class BME680(object):

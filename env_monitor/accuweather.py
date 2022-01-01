@@ -1,7 +1,7 @@
-
 import os
 import requests
 import json
+
 from urllib.error import HTTPError
 from datetime import datetime
 
@@ -80,7 +80,6 @@ class ACW(object):
             print("\t Current pressure: %0.3f hPa (mb)" % self.pressure)
 
         # Write current weather data to AIO feeds
-        
         self.aio.send('humidity local', self.humidity)
         self.aio.send('pressure local', self.pressure)
         self.aio.send('temperature local', self.temp_imperial)

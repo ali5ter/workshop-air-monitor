@@ -1,5 +1,5 @@
-
 import serial
+
 from datetime import datetime
 
 class SDS011(object):
