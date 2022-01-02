@@ -31,7 +31,7 @@ class BME680(object):
         self.total_pressure = 0
 
         # Total of all pressure samples used for rolling averages
-        self.total_temp = 0
+        self.total_temperature = 0
 
         # Connect to the BME680 sensor
         self.sensor = adafruit_bme680.Adafruit_BME680_I2C(board.I2C(), debug=False)
@@ -73,14 +73,15 @@ class BME680(object):
             # Calc rolling average for BME680 date
             self.total_humidity += humidity
             self.total_pressure += pressure
-            self.total_temp += tempF
+            self.total_temperature += tempF
             ave_humidity = self.total_humidity/self.sample_count
             ave_pressure = self.total_pressure/self.sample_count
-            ave_temp = self.total_temp/self.sample_count
-            print(f"\t Humidity ave = {ave_humidity}  Pressure ave = {ave_pressure}  Temperature ave = {ave_temp}")
+            ave_temperature = self.total_temperature/self.sample_count
+            print(f"\t Humidity ave = {ave_humidity}  Pressure ave = {ave_pressure}  Temperature ave = {ave_temperature}")
 
             # Write BME680 data to AIO feeds
             self.aio.send('temperature', tempF)
+            self.aio.send('temperature ave', ave_temperature)
             self.aio.send('gas', gas)
             self.aio.send('humidity', humidity)
             self.aio.send('humidity ave', ave_humidity)
