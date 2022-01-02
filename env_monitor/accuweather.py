@@ -1,9 +1,9 @@
+import logging
 import os
 import requests
 import json
 
 from urllib.error import HTTPError
-from datetime import datetime
 
 class ACW(object):
 
@@ -55,18 +55,15 @@ class ACW(object):
 
     def get_data(self, loop):
 
-        dt = datetime.now()
-        ts = dt.strftime('%x %X')
-
         if (loop-1) % self.sample_time == 0:
             try:
-                print(f"{loop}@{ts}: Fetching current weather conditions")
+                logging.info('[%d] Fetching current weather conditions', loop)
                 r = requests.get(self.conditions_method.format(self.location_key, self.key))
                 r.raise_for_status()
             except HTTPError as http_err:
-                print(f'HTTP error: {http_err}')
+                logging.error('HTTP error: %s', http_err)
             except Exception as err:
-                print(f'Other error: {err}')
+                logging.error('Other error: %s', err)
             else:
                 json_data = json.loads(r.text)
                 for data in json_data:
@@ -75,9 +72,9 @@ class ACW(object):
                     self.humidity = data['RelativeHumidity']
                     self.pressure = data["Pressure"]['Metric']['Value']
 
-            print("\t Current temperature: %0.1f C (%0.1f F)" % (self.temp_metric, self.temp_imperial))
-            print("\t Current relative humidity: %0.1f %%" % self.humidity)
-            print("\t Current pressure: %0.3f hPa (mb)" % self.pressure)
+            logging.info("\t Current temperature: %0.1f C (%0.1f F)" % (self.temp_metric, self.temp_imperial))
+            logging.info("\t Current relative humidity: %0.1f %%" % self.humidity)
+            logging.info("\t Current pressure: %0.3f hPa (mb)" % self.pressure)
 
         # Write current weather data to AIO feeds
         self.aio.send('humidity local', self.humidity)

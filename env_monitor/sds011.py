@@ -1,6 +1,5 @@
+import logging
 import serial
-
-from datetime import datetime
 
 class SDS011(object):
 
@@ -45,10 +44,8 @@ class SDS011(object):
 
         if loop % self.sample_time == 0:
 
-            dt = datetime.now()
-            ts = dt.strftime('%x %X')
             self.sample_count += 1
-            print(f"{loop}@{ts}: Fetching SDS011 sensor data")
+            logging.info('[%d] Fetching SDS011 sensor data', loop)
 
             data = []
             for index in range(0,10):
@@ -56,14 +53,14 @@ class SDS011(object):
                 data.append(datum)
             pm_small = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
             pm_large = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
-            print(f"\t PM2.5 = {pm_small}  PM10 = {pm_large}")
+            logging.info(f"\t PM2.5 = {pm_small}  PM10 = {pm_large}")
 
             # Calc rolling averages for SDS011 data
             self.total_pm_small += pm_small
             self.total_pm_large += pm_large
             ave_pm_small = self.total_pm_small/self.sample_count
             ave_pm_large = self.total_pm_large/self.sample_count
-            print(f"\t PM2.5 ave = {ave_pm_small}  PM10 ave = {ave_pm_large}")
+            logging.info(f"\t PM2.5 ave = {ave_pm_small}  PM10 ave = {ave_pm_large}")
 
             # Write SDS011 data to AIO feeds
             self.aio.send('pm2.5', pm_small)
@@ -75,4 +72,4 @@ class SDS011(object):
             if (loop-1) % self.samples_day == 0:
                 self.aio.send_data('pm2.4 24h ave', ave_pm_small)
                 self.aio.send_data('pm10 24h ave', ave_pm_large)
-                print(f"\t PM2.5 24h ave = {ave_pm_small}  PM10 24h ave = {ave_pm_large}")
+                logging.info(f"\t PM2.5 24h ave = {ave_pm_small}  PM10 24h ave = {ave_pm_large}")

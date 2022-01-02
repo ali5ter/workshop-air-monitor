@@ -1,3 +1,4 @@
+import logging
 import os
 
 from Adafruit_IO import Client, Feed, Group
@@ -32,22 +33,29 @@ class AIO(object):
             try:
                 self.client.delete_group(self.group)
             except Exception as err:
-                print(f'AIO Client error: {err}')
+                logging.error('AIO Client error: %s', err)
             group = Group(name=self.group)
             group = self.client.create_group(group)
             for name in self.feed_names:
-                print(f"Creating feed for {name}")
+                logging.error('AIO Client error: %s', err)
+                print(f"Creating feed called, {name}")
                 feed = Feed(name=name)
                 self.feeds[name] = self.client.create_feed(feed, group_key=self.group)
         else:
             group = self.client.groups(self.group)
             for feed in group.feeds:
-                print(f"Connecting feed for {feed.name}")
+                logging.info('Connecting AIO Feed called, %s', feed.name)
                 self.feeds[feed.name] = self.client.feeds(feed.key)
 
     def send(self, name, data):
 
         if name in self.feeds.keys():
-            self.client.send_data(self.feeds[name].key, data)
+            while True:
+                try:
+                    self.client.send_data(self.feeds[name].key, data)
+                except Exception as err:
+                    logging.warning('Unable to send data to AIO: %s', err)
+                    continue
+                break
         else:
-            print(f"Unable to find feed name of '{name}'")
+            logging.error('Unable to find AIO Feed called, %s', name)

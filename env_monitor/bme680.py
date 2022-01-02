@@ -1,8 +1,6 @@
-
+import logging
 import board
 import adafruit_bme680
-
-from datetime import datetime
 
 class BME680(object):
 
@@ -52,10 +50,8 @@ class BME680(object):
 
         if loop % self.sample_time == 0:
 
-            dt = datetime.now()
-            ts = dt.strftime('%x %X')
             self.sample_count += 1
-            print(f"{loop}@{ts}: Fetching BME680 sensor data")
+            logging.info('[%d] Fetching BME680 sensor data', loop)
 
             self.sensor.sea_level_pressure = self.current_pressure  # Calibrate BME680
             tempC = self.sensor.temperature + self.bme680_temp_offset
@@ -64,11 +60,11 @@ class BME680(object):
             humidity = self.sensor.relative_humidity
             pressure = self.sensor.pressure
             altitude = self.sensor.altitude
-            print("\t Temperature: %0.1f C (%0.1f F)" % (tempC, tempF))
-            print("\t Gas: %d ohm" % gas)
-            print("\t Humidity: %0.1f %%" % humidity)
-            print("\t Pressure: %0.3f hPa" % pressure)
-            print("\t Altitude = %0.2f meters" % altitude)
+            logging.info("\t Temperature: %0.1f C (%0.1f F)" % (tempC, tempF))
+            logging.info("\t Gas: %d ohm" % gas)
+            logging.info("\t Humidity: %0.1f %%" % humidity)
+            logging.info("\t Pressure: %0.3f hPa" % pressure)
+            logging.info("\t Altitude = %0.2f meters" % altitude)
 
             # Calc rolling average for BME680 date
             self.total_humidity += humidity
@@ -77,7 +73,7 @@ class BME680(object):
             ave_humidity = self.total_humidity/self.sample_count
             ave_pressure = self.total_pressure/self.sample_count
             ave_temperature = self.total_temperature/self.sample_count
-            print(f"\t Humidity ave = {ave_humidity}  Pressure ave = {ave_pressure}  Temperature ave = {ave_temperature}")
+            logging.info(f"\t Humidity ave = {ave_humidity}  Pressure ave = {ave_pressure}  Temperature ave = {ave_temperature}")
 
             # Write BME680 data to AIO feeds
             self.aio.send('temperature', tempF)

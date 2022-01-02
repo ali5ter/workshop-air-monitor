@@ -1,4 +1,6 @@
 import time
+import sys
+import logging
 
 from .accuweather import ACW
 from .aio import AIO
@@ -9,6 +11,15 @@ from .sds011 import SDS011
 class Monitor(object):
 
     def __init__(self):
+
+        logging.basicConfig(
+            filename='env_monitor.log',
+            encoding='utf-8',
+            format='%(asctime)s::%(levelname)s::%(message)s',
+            datefmt='%m/%d/%Y %I:%M:%S %p',
+            level=logging.INFO
+        )
+        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
         
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
@@ -44,7 +55,9 @@ class Monitor(object):
 
         self.aio.connect_feeds(init=initialize_feeds)
 
-    def start(self):  
+    def start(self):
+
+        logging.info('Started monitor loop')
 
         loop = 0      
 
