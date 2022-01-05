@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 
 from Adafruit_IO import Client, Feed, Group
 
@@ -23,6 +24,9 @@ class AIO(object):
 
         # Adafruit IO Feed references
         self.feeds = {}
+
+        # Adafruit IO request backoff time appears to be 120s
+        self.request_backoff_time = 120
 
         # Connection to AIO
         self.client = Client(self.user, self.key)
@@ -54,8 +58,12 @@ class AIO(object):
                 try:
                     self.client.send_data(self.feeds[name].key, data)
                 except Exception as err:
-                    logging.warning('Unable to send data to AIO: %s', err)
-                    continue
+                    if str(err).startswith('Exceeded the limit of Adafruit IO requests in a short period of time'):
+                        time.sleep(self.request_backoff_time)
+                        self.send(name, data)
+                    else:
+                        logging.warning('Unable to send data to AIO: %s', err)
+                        continue
                 break
         else:
             logging.error('Unable to find AIO Feed called, %s', name)
