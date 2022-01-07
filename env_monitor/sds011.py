@@ -70,6 +70,6 @@ class SDS011(object):
 
             # Write 24h SDS011 data to AIO feeds
             if (loop-1) % self.samples_day == 0:
-                self.aio.send_data('pm2.4 24h ave', ave_pm_small)
-                self.aio.send_data('pm10 24h ave', ave_pm_large)
+                self.aio.send('pm2.4 24h ave', ave_pm_small)
+                self.aio.send('pm10 24h ave', ave_pm_large)
                 logging.info(f"\t PM2.5 24h ave = {ave_pm_small}  PM10 24h ave = {ave_pm_large}")
