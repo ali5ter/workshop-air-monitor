@@ -21,8 +21,11 @@ sudo pip3 install --upgrade adafruit-blinka --break-system-packages
 echo "🌡️ Installing Adafruit CircuitPython library for BME680 sensor..."
 sudo pip3 install adafruit-circuitpython-bme680 --break-system-packages
 
-echo "🌫️ Installing SDS011 support (UART-based sensor)..."
-sudo pip3 install sds011 --break-system-packages
+echo "🌫️ Installing pyserial for SDS011 (UART-based sensor)..."
+sudo pip3 install --upgrade pyserial --break-system-packages
+
+echo "🔐 Adding user '$USER' to 'dialout' group for serial port access..."
+sudo usermod -aG dialout "$USER"
 
 echo "✅ Libraries installed. Now enabling I2C, SPI, and Serial..."
 
