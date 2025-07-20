@@ -9,8 +9,8 @@ set -e
 echo "🔌 Step 1: Running Adafruit raspi-blinka.py to configure hardware interfaces..."
 
 # Download and run Adafruit's official setup script
-curl -fsSL https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/adafruit-shell.py -o adafruit_shell.py
-curl -fsSL https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py -o raspi-blinka.py
+curl -sSLO https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
+curl -sSLO https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/adafruit-shell.py
 sudo python3 raspi-blinka.py
 rm -f adafruit_shell.py raspi-blinka.py
 
