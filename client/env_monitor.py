@@ -14,10 +14,10 @@ if __name__ == '__main__':
         '-I', '--init',
         action="store_true", 
         default=False, 
-        help='Initialize the Adafruit IO feeds'
+        help='Initialize any feeds before starting the monitor'
     )
     args = vars(all_args.parse_args())
 
     monitor = Monitor()
-    monitor.connect_feeds(args['init'])
+    # monitor.connect_feeds(args['init'])
     monitor.start()

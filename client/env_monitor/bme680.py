@@ -17,7 +17,7 @@ class BME680(object):
         self.sample_time = sample_time
 
         # Instance of the connection to Adafruit IO
-        self.aio = aio
+        # self.aio = aio
 
         # Sample counter used for rolling averages
         self.sample_count = 0

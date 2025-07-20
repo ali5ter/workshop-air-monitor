@@ -31,7 +31,7 @@ class Monitor(object):
         self.samples_day = int((60*60*24)/self.loop_delay)
 
         # Set upi connection to Adafruit IO
-        self.aio = AIO()
+        # self.aio = AIO()
         
         # Set up connection to Accuweather
         self.acw = ACW(self.samples_day, self.aio)
@@ -46,14 +46,14 @@ class Monitor(object):
         self.pir = PIR(1, self.aio)
         
 
-    def connect_feeds(self, initialize_feeds=False):
+    # def connect_feeds(self, initialize_feeds=False):
 
-        self.acw.add_feeds()
-        self.sds011.add_feeds()
-        self.bme680.add_feeds()
-        self.pir.add_feeds()
+    #     self.acw.add_feeds()
+    #     self.sds011.add_feeds()
+    #     self.bme680.add_feeds()
+    #     self.pir.add_feeds()
 
-        self.aio.connect_feeds(init=initialize_feeds)
+    #     self.aio.connect_feeds(init=initialize_feeds)
 
     def start(self):
 

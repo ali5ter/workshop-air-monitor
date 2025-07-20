@@ -17,4 +17,5 @@ while True:
     pm_small = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
     pm_large = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
     print(f"PM2.5: {pm_small} µg/m³  |  PM10: {pm_large} µg/m³")
+    print("-" * 40)
     time.sleep(10)

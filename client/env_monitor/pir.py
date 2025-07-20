@@ -16,7 +16,7 @@ class PIR(object):
         self.sample_count = 0
 
         # Instance of the connection to Adafruit IO
-        self.aio = aio
+        # self.aio = aio
 
         # Connect to the PIR sensor
         self.sensor = digitalio.DigitalInOut(self.input_pin)
@@ -27,11 +27,11 @@ class PIR(object):
         self.old_value = self.current_value
 
 
-    def add_feeds(self):
+    # def add_feeds(self):
 
-        self.aio.feed_names = self.aio.feed_names + [
-            'motion'
-        ]
+    #     self.aio.feed_names = self.aio.feed_names + [
+    #         'motion'
+    #     ]
 
     def get_data(self, loop):
 
@@ -45,10 +45,10 @@ class PIR(object):
                 if not self.old_value:
                     motion = 1
                     logging.info("\t Motion detected")
-                self.aio.send('motion', 1)
+                # self.aio.send('motion', 1)
             else:
                 if self.old_value:
                     motion = 0
                     logging.info("\t Motion ended")
-                self.aio.send('motion', 0)
+                # self.aio.send('motion', 0)
             self.old_value = self.current_value

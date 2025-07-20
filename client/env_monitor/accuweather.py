@@ -43,15 +43,15 @@ class ACW(object):
         self.pressure = 0
 
         # Instance of the connection to Adafruit IO
-        self.aio = aio
+        # self.aio = aio
 
-    def add_feeds(self):
+    # def add_feeds(self):
 
-        self.aio.feed_names = self.aio.feed_names + [
-            'humidity local',
-            'pressure local',
-            'temperature local'
-        ]
+    #     self.aio.feed_names = self.aio.feed_names + [
+    #         'humidity local',
+    #         'pressure local',
+    #         'temperature local'
+    #     ]
 
     def get_data(self, loop):
 
@@ -77,6 +77,6 @@ class ACW(object):
             logging.info("\t Current pressure: %0.3f hPa (mb)" % self.pressure)
 
         # Write current weather data to AIO feeds
-        self.aio.send('humidity local', self.humidity)
-        self.aio.send('pressure local', self.pressure)
-        self.aio.send('temperature local', self.temp_imperial)
+        # self.aio.send('humidity local', self.humidity)
+        # self.aio.send('pressure local', self.pressure)
+        # self.aio.send('temperature local', self.temp_imperial)

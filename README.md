@@ -22,7 +22,7 @@ Using [the SDS011 sensor](https://microcontrollerslab.com/wp-content/uploads/202
 
 Adafruit sell [the amazing BME680](https://learn.adafruit.com/adafruit-bme680-humidity-temperature-barometic-pressure-voc-gas) providing the remaining environmental sensing I wanted.
 
-I took advantage of the adafruit_blinka python library to use the CircuitPython hardware API that talks I2C and SPI protocols that sensors often use. Adafruit [explains this and how to install this lib onto your Linux SBC](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi) and I also put the associated commands into the [install.sh](install.sh) script for repeatability.
+I took advantage of the adafruit_blinka python library to use the CircuitPython hardware API that talks I2C and SPI protocols that sensors often use. Adafruit [explains this and how to install this lib onto your Linux SBC](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi). As explained below, I provide a script to install the nessesary sensor support.
 
 ### Motion
 
@@ -51,6 +51,8 @@ The configuration for InfluxDB and Granfana is in [influx_grafana_config.env](se
 The monitor application, [env_monitor.pl](client/env_monitor.py) runs on the client side. It runs on a Raspberry Pi Zero 2 with the environmental sensors described above attached.
 
 The [install_sensor_support.sh](client/install_sensor_support.sh) script uses apt and pip to install libraries so that the python application running on the RPi can talk to the envornmental sensors. You only have to run this once and reboot the RPi to make sure the changes have taken before running the monitoring application.
+
+You may get a warning saying, "Kernel module 'spi-dev' not found". Ignore that.
 
 After the sensor support is established, you can use [the test scripts](/client/test/) to see if the attached sensors are working.
 
