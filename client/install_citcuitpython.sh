@@ -13,16 +13,16 @@ echo "🐍 Installing Python 3 and required dev tools..."
 sudo apt install -y python3 python3-pip python3-dev python3-setuptools python3-smbus i2c-tools git
 
 echo "📦 Upgrading pip..."
-sudo python3 -m pip install --upgrade pip
+sudo python3 -m pip install --upgrade pip --break-system-packages
 
 echo "🌈 Installing Adafruit Blinka (CircuitPython compatibility layer)..."
-sudo pip3 install --upgrade adafruit-blinka
+sudo pip3 install --upgrade adafruit-blinka --break-system-packages
 
 echo "🌡️ Installing Adafruit CircuitPython library for BME680 sensor..."
-sudo pip3 install adafruit-circuitpython-bme680
+sudo pip3 install adafruit-circuitpython-bme680 --break-system-packages
 
 echo "🌫️ Installing SDS011 support (UART-based sensor)..."
-sudo pip3 install sds011
+sudo pip3 install sds011 --break-system-packages
 
 echo "✅ Libraries installed. Now enabling I2C, SPI, and Serial..."
 
