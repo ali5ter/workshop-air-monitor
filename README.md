@@ -50,6 +50,10 @@ The configuration for InfluxDB and Granfana is in [influx_grafana_config.env](se
 
 The monitor application, [env_monitor.pl](client/env_monitor.py) runs on the client side. It runs on a Raspberry Pi Zero 2 with the environmental sensors described above attached.
 
-The [install_circuitpython.sh](client/install_citcuitpython.sh) script uses apt and pip to install libraries so that the python application running on the RPi can talk to the envornmental sensors. You only have to run this once and reboot the RPi to make sure the changes have taken before running the monitoring application.
+The [install_sensor_support.sh](client/install_sensor_support.sh) script uses apt and pip to install libraries so that the python application running on the RPi can talk to the envornmental sensors. You only have to run this once and reboot the RPi to make sure the changes have taken before running the monitoring application.
+
+After the sensor support is established, you can use [the test scripts](/client/test/) to see if the attached sensors are working.
+
+Note that in my hardware implementation, the PIR sensor was connected to GPIO pin 4. 
 
 ...
