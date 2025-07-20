@@ -4,9 +4,11 @@ I wanted to monitor the air quality, temperature and pressure of my garage works
 
 As well as controlling my air filtration, sawdust collection and heating systems, I was curious to know baselines for general particulate matter, noxious gasses, pressure and humidity. I also wanted a way to trigger a camera from a motion sensor to record who was going in and out of the workshop.
 
-Instead of creating a web server to present graphs of collected data, I chose to [push data to feeds on Adafruit IO](https://adafruit-io-python-client.readthedocs.io/en/latest/data.html) where I could play with dashboarding the feed data.
+The collected data is pushed to InfluxDB and then visualized using Grafana.
 
-I could [trigger other services directly using IFTTT](https://platform.ifttt.com/docs/connect_api) but saw that [Adafruit IO already integrates with IFTTT](https://learn.adafruit.com/using-ifttt-with-adafruit-io).
+## Future considerations
+
+I would like to [trigger other services directly using IFTTT](https://platform.ifttt.com/docs/connect_api). For example, turning on the heating system when the temperature drops below a specific reading, or starting a camera when motion is detected.
 
 ## Particulate matter monitoring
 
@@ -20,13 +22,18 @@ Adafruit sell [the amazing BME680](https://learn.adafruit.com/adafruit-bme680-hu
 
 I took advantage of the adafruit_blinka python library to use the CircuitPython hardware API that talks I2C and SPI protocols that sensors often use. Adafruit [explains this and how to install this lib onto your Linux SBC](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi) and I also put the associated commands into the [install.sh](install.sh) script for repeatability.
 
-
 ## Motion sensing
 
-I chose to use [the Pyroelectric ("Passive") InfraRed Sensor from Adafruit](https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor) to undersstand if someone was in the workshop. I figured that would be good to cross reference with environmental changes but also wanted a way to trigger a camera to at least understand who was in there. 
+I chose to use [the Pyroelectric ("Passive") InfraRed Sensor from Adafruit](https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor) to undersstand if someone was in the workshop. I figured that would be good to cross reference with environmental changes but also wanted a way to trigger a camera to at least understand who was in there.
 
-## Camera module
+## Server side
 
-...
+InfluxDB and Grafana services can be stood up as container based apps using Docker on a seperate server or the one running the monitor.
 
+The script, [start_influx_grafana.sh](start_influx_grafana.sh), helps start up these services as Docker containers. Note the configuration for InfluxDB and Granfana at the top of the script and change accordingly. These parameters will be used below.
 
+### Configure InfluxDB
+
+1. Open the InfluxDB UI and set up the username, password, and org configured in the script.
+2. Create a bucket using the name configured in the script.
+3. Generate a write token, and save that to ~/.config/influxdb-token
