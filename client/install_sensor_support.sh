@@ -8,11 +8,14 @@ set -e
 
 echo "🔌 Step 1: Running Adafruit raspi-blinka.py to configure hardware interfaces..."
 
+echo "📦 Installing required Python packages..."
+sudo pip3 install --upgrade pip setuptools wheel --break-system-packages
+sudo pip3 install adafruit-python-shell --break-system-packages
+
 # Download and run Adafruit's official setup script
 curl -sSLO https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
-curl -sSLO https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/adafruit-shell.py
 sudo python3 raspi-blinka.py
-rm -f adafruit_shell.py raspi-blinka.py
+rm -f raspi-blinka.py
 
 echo "📦 Step 2: Upgrading pip and installing sensor libraries..."
 
