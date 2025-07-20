@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# @file: install.sh
-# @brief: Script to install necessary libraries and configure the clientsystem for sensor support.
+# @file: install_circuitpython.sh
+# @brief: Script to install necessary libraries and configure the system for sensor support.
 # @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
 # @note: This script is intended for Debian-based systems (e.g., Raspberry Pi OS).
 
