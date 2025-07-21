@@ -36,6 +36,9 @@ class Monitor(object):
         # The number of loops after which to store 24 hours worth of data
         self.samples_day = int((60*60*24)/self.loop_delay)
 
+        # Default to running state
+        self.running = True
+
         # Set upi connection to Adafruit IO
         # self.aio = AIO()
         self.aio = None  # Placeholder for AIO connection, if needed
