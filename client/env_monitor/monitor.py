@@ -17,15 +17,6 @@ from memory_profiler import memory_usage
 class Monitor(object):
 
     def __init__(self):
-
-        logging.basicConfig(
-            filename='env_monitor.log',
-            encoding='utf-8',
-            format='%(asctime)s::%(levelname)s::%(message)s',
-            datefmt='%m/%d/%Y %I:%M:%S %p',
-            level=logging.INFO
-        )
-        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
         
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
@@ -58,6 +49,21 @@ class Monitor(object):
         # Register signal handlers
         signal.signal(signal.SIGINT, self.handle_exit)
         signal.signal(signal.SIGTERM, self.handle_exit)
+
+    def setup_logging(self, loglevel):
+        numeric_level = getattr(logging, loglevel.upper(), None)
+        if not isinstance(numeric_level, int):
+            raise ValueError(f"Invalid log level: {loglevel}")
+        
+        logging.basicConfig(
+            filename='env_monitor.log',
+            encoding='utf-8',
+            format='%(asctime)s::%(levelname)s::%(message)s',
+            datefmt='%m/%d/%Y %I:%M:%S %p',
+            level=numeric_level
+        )
+        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+        logging.info(f"Logging initialized at level: {loglevel}")
 
     def handle_exit(self, signum, frame):
         logging.info(f"Signal {signum} received. Exiting gracefully.")
