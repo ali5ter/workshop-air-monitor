@@ -36,6 +36,7 @@ class Monitor(object):
 
         # Set upi connection to Adafruit IO
         # self.aio = AIO()
+        self.aio = None  # Placeholder for AIO connection, if needed
         
         # Set up connection to Accuweather
         self.acw = ACW(self.samples_day, self.aio)
