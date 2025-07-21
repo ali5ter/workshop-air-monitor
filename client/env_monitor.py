@@ -25,7 +25,7 @@ if __name__ == '__main__':
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
         help='Set the logging level'
     )
-    all_args = all_args.parse_args(
+    all_args.add_argument(
         '-d', '--duration',
         type=int,
         help='Duration in minutes to run the monitor (optional, default is to run indefinitely)',
