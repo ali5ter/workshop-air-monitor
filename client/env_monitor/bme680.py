@@ -1,3 +1,7 @@
+# @file: bme680.py
+# @brief: BME680 sensor client for fetching environmental data
+# @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
+
 import logging
 import board
 import adafruit_bme680

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# @file: monitor.py
+# @brief: Monitor environmental sensors and log data
+# @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
 
 import argparse
 

@@ -1,3 +1,7 @@
+# @file: pir.py
+# @brief: PIR sensor client for fetching motion detection data
+# @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
+
 import logging
 import board
 import digitalio

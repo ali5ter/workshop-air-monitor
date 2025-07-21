@@ -1,3 +1,7 @@
+# @file: accuweather.py
+# @brief: Accuweather API client for fetching current weather conditions
+# @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
+
 import logging
 import os
 import requests

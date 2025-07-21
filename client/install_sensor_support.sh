@@ -4,7 +4,8 @@
 # @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
 # @note: This script is intended for Debian-based systems (e.g., Raspberry Pi OS).
 
-set -e
+[[ -n $DEBUG ]] && set -x
+set -eou pipefail
 
 echo "🔌 Step 1: Running Adafruit raspi-blinka.py to configure hardware interfaces..."
 
@@ -61,8 +62,9 @@ echo "✅ Setup complete. A reboot is required to apply changes."
 echo "   - UART is enabled and serial console is disabled"
 echo "   - Sensor libraries installed: BME680, pyserial (for SDS011)"
 echo "   - User '$USER' added to 'dialout' group (relogin or reboot required)"
+echo "🧪 You can test if the sensors are working by running the scripts in the 'client/test' directory."
 
-read -p "🔁 Reboot now? [y/N]: " reboot_ans
+read -r -p "🔁 Reboot now? [y/N]: " reboot_ans
 if [[ "$reboot_ans" =~ ^[Yy]$ ]]; then
     sudo reboot
 else

@@ -1,3 +1,7 @@
+# @file: sds011.py
+# @brief: SDS011 sensor client for fetching air quality data
+# @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
+
 import logging
 import serial
 

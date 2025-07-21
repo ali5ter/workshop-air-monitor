@@ -1,9 +1,13 @@
+# @file: monitor.py
+# @brief: Monitor environmental sensors and log data
+# @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
+
 import time
 import sys
 import logging
 
 from .accuweather import ACW
-from .aio import AIO
+# from .aio import AIO
 from .bme680 import BME680
 from .pir import PIR
 from .sds011 import SDS011
