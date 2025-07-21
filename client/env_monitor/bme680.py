@@ -80,10 +80,10 @@ class BME680(object):
             logging.info(f"\t Humidity ave = {ave_humidity}  Pressure ave = {ave_pressure}  Temperature ave = {ave_temperature}")
 
             # Write BME680 data to AIO feeds
-            self.aio.send('temperature', tempF)
-            self.aio.send('temperature ave', ave_temperature)
-            self.aio.send('gas', gas)
-            self.aio.send('humidity', humidity)
-            self.aio.send('humidity ave', ave_humidity)
-            self.aio.send('pressure', pressure)
-            self.aio.send('pressure ave', ave_pressure)
+            # self.aio.send('temperature', tempF)
+            # self.aio.send('temperature ave', ave_temperature)
+            # self.aio.send('gas', gas)
+            # self.aio.send('humidity', humidity)
+            # self.aio.send('humidity ave', ave_humidity)
+            # self.aio.send('pressure', pressure)
+            # self.aio.send('pressure ave', ave_pressure)
