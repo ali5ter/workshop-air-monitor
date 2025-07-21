@@ -29,6 +29,9 @@ sudo pip3 install adafruit-circuitpython-bme680 --break-system-packages
 # Install pyserial for SDS011 sensor
 sudo pip3 install pyserial --break-system-packages
 
+# install memory-profiler for monitoring memory usage
+sudo pip3 install memory-profiler --break-system-packages
+
 # Add user to 'dialout' group for UART access
 echo "🔐 Adding user '$USER' to 'dialout' group..."
 sudo usermod -aG dialout "$USER"

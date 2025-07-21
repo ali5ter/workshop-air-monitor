@@ -5,12 +5,14 @@
 import time
 import sys
 import logging
+import signal
 
 from .accuweather import ACW
 # from .aio import AIO
 from .bme680 import BME680
 from .pir import PIR
 from .sds011 import SDS011
+from memory_profiler import memory_usage
 
 class Monitor(object):
 
@@ -49,7 +51,26 @@ class Monitor(object):
 
         # Set up the connection to the PIR sensor
         self.pir = PIR(1, self.aio)
-        
+
+        # Register signal handlers
+        signal.signal(signal.SIGINT, self.handle_exit)
+        signal.signal(signal.SIGTERM, self.handle_exit)
+
+    def handle_exit(self, signum, frame):
+        logging.info(f"Signal {signum} received. Exiting gracefully.")
+        self.running = False
+
+    def cleanup(self):
+        logging.info('Cleaning up resources...')
+        # Close sensor connections if needed
+        if hasattr(self.sds011, 'close'):
+            self.sds011.close()
+        if hasattr(self.bme680, 'close'):
+            self.bme680.close()
+        if hasattr(self.pir, 'close'):
+            self.pir.close()
+        # If you used AIO or other network resources, close them here
+        logging.info('Cleanup complete.')
 
     # def connect_feeds(self, initialize_feeds=False):
 
@@ -60,21 +81,28 @@ class Monitor(object):
 
     #     self.aio.connect_feeds(init=initialize_feeds)
 
+    def run_loop(self, loop):
+        self.acw.get_data(loop)
+        self.bme680.current_pressure = self.acw.pressure
+        self.sds011.get_data(loop)
+        self.bme680.get_data(loop)
+        self.pir.get_data(loop)
+
     def start(self):
-
         logging.info('Started monitor loop')
-
         loop = 0      
 
-        while True:
+        try:
+            while self.running:
+                loop += 1
 
-            loop += 1
+                mem_before = memory_usage()[0]
+                self.run_loop(loop)
+                mem_after = memory_usage()[0]
+                logging.debug(f"Memory used: {mem_after - mem_before:.2f} MiB")
 
-            self.acw.get_data(loop)
-            self.bme680.current_pressure = self.acw.pressure
-
-            self.sds011.get_data(loop)
-            self.bme680.get_data(loop)
-            self.pir.get_data(loop)
-
-            time.sleep(self.loop_delay)
+                time.sleep(self.loop_delay)
+        
+        finally:
+            self.cleanup()
+            logging.info('Monitor loop ended')
