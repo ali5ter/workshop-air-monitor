@@ -25,9 +25,14 @@ if __name__ == '__main__':
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
         help='Set the logging level'
     )
+    all_args = all_args.parse_args(
+        '-d', '--duration',
+        type=int,
+        help='Duration in minutes to run the monitor (optional, default is to run indefinitely)',
+    )
     args = vars(all_args.parse_args())
 
     monitor = Monitor()
     monitor.setup_logging(args['loglevel'])
     # monitor.connect_feeds(args['init'])
-    monitor.start()
+    monitor.start(duration_minutes=args['duration'])

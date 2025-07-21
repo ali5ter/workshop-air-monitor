@@ -97,12 +97,18 @@ class Monitor(object):
         self.bme680.get_data(loop)
         self.pir.get_data(loop)
 
-    def start(self):
+    def start(self, duration_minutes=None):
         logging.info('Started monitor loop')
-        loop = 0      
+        loop = 0
+        start_time = time.time()
+        max_duration = duration_minutes * 60 if duration_minutes else None
 
         try:
             while self.running:
+                if max_duration and (time.time() - start_time) >= max_duration:
+                    logging.info("Reached maximum run duration. Exiting.")
+                    break
+
                 loop += 1
 
                 mem_before = memory_usage()[0]
