@@ -4,7 +4,8 @@
 # @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
 
 set -a
-source ./influx_grafana.env
+# shellcheck disable=SC1091
+source ./influx_grafana_config.env
 set +a
 
 docker_running() {
@@ -61,14 +62,14 @@ start_influxdb() {
     docker run -d \
         --name=influxdb \
         --network=monitor-net \
-        -p 8086:8086 \
+        -p "$INFLUXDB_PORT":"$INFLUXDB_PORT" \
         -v influxdb-data:/var/lib/influxdb2 \
         -e DOCKER_INFLUXDB_INIT_MODE=setup \
-        -e DOCKER_INFLUXDB_INIT_USERNAME="$DOCKER_INFLUXDB_INIT_USERNAME" \
-        -e DOCKER_INFLUXDB_INIT_PASSWORD="$DOCKER_INFLUXDB_INIT_PASSWORD" \
-        -e DOCKER_INFLUXDB_INIT_ORG="$DOCKER_INFLUXDB_INIT_ORG" \
-        -e DOCKER_INFLUXDB_INIT_BUCKET="$DOCKER_INFLUXDB_INIT_BUCKET" \
-        -e DOCKER_INFLUXDB_INIT_ADMIN_TOKEN="$DOCKER_INFLUXDB_INIT_ADMIN_TOKEN" \
+        -e DOCKER_INFLUXDB_INIT_USERNAME="$INFLUXDB_USERNAME" \
+        -e DOCKER_INFLUXDB_INIT_PASSWORD="$INFLUXDB_PASSWORD" \
+        -e DOCKER_INFLUXDB_INIT_ORG="$INFLUXDB_ORG" \
+        -e DOCKER_INFLUXDB_INIT_BUCKET="$INFLUXDB_BUCKET" \
+        -e DOCKER_INFLUXDB_INIT_ADMIN_TOKEN="$INFLUXDB_ADMIN_TOKEN" \
         influxdb:2.7
 }   
 
@@ -77,11 +78,11 @@ start_grafana() {
     docker run -d \
         --name=grafana \
         --network=monitor-net \
-        -p 3000:3000 \
+        -p "$GRAFANA_PORT":"$GRAFANA_PORT" \
         -v grafana-storage:/var/lib/grafana \
-        -e GF_SECURITY_ADMIN_USER="$GF_SECURITY_ADMIN_USER" \
-        -e GF_SECURITY_ADMIN_PASSWORD="$GF_SECURITY_ADMIN_PASSWORD" \
-        -e GF_SECURITY_DISABLE_INITIAL_ADMIN_CHANGE="$GF_SECURITY_DISABLE_INITIAL_ADMIN_CHANGE" \
+        -e GF_SECURITY_ADMIN_USER="$GRAFANA_ADMIN_USER" \
+        -e GF_SECURITY_ADMIN_PASSWORD="$GRAFANA_ADMIN_PASSWORD" \
+        -e GF_SECURITY_DISABLE_INITIAL_ADMIN_CHANGE="$GRAFANA_DISABLE_INITIAL_ADMIN_CHANGE" \
         grafana/grafana
 }
 
@@ -98,20 +99,19 @@ main() {
     start_influxdb
     start_grafana
 
-    IP_ADDRESS=$(ifconfig | awk '/inet / && $2 != "127.0.0.1" { print $2; exit }')
-    echo "📡 Local IP address: $IP_ADDRESS"
+    echo "📡 Local IP address: $SERVER_IP"
 
     echo "✅ Setup complete!"
-    echo "🌐 InfluxDB available at: http://$IP_ADDRESS:8086"
-    echo "    - Username: $DOCKER_INFLUXDB_INIT_USERNAME"
-    echo "    - Password: $DOCKER_INFLUXDB_INIT_PASSWORD"
-    echo "    - Org: $DOCKER_INFLUXDB_INIT_ORG"
-    echo "    - Bucket: $DOCKER_INFLUXDB_INIT_BUCKET"
-    echo "    - Token: $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN"
+    echo "🌐 InfluxDB available at: http://$SERVER_IP:$INFLUXDB_PORT"
+    echo "    - Username: $INFLUXDB_USERNAME"
+    echo "    - Password: $INFLUXDB_PASSWORD"
+    echo "    - Org: $INFLUXDB_ORG"
+    echo "    - Bucket: $INFLUXDB_BUCKET"
+    echo "    - Token: $INFLUXDB_ADMIN_TOKEN"
     echo
-    echo "🌐 Grafana available at: http://$IP_ADDRESS:3000"
-    echo "    - Username: $GF_SECURITY_ADMIN_USER"
-    echo "    - Password: $GF_SECURITY_ADMIN_PASSWORD"
+    echo "🌐 Grafana available at: http://$SERVER_IP:$GRAFANA_PORT"
+    echo "    - Username: $GRAFANA_ADMIN_USER"
+    echo "    - Password: $GRAFANA_ADMIN_PASSWORD"
 }
 
 # Run the script as it is being executed directly

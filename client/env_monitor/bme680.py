@@ -87,3 +87,19 @@ class BME680(object):
             # self.aio.send('humidity ave', ave_humidity)
             # self.aio.send('pressure', pressure)
             # self.aio.send('pressure ave', ave_pressure)
+
+            # Write BME680 data to InfluxDB
+            fields = {
+                'temperature': tempF,
+                'temperature_ave': ave_temperature,
+                'pressure': pressure,
+                'pressure_ave': ave_pressure,
+                'humidity': humidity,
+                'humidity_ave': ave_humidity,
+                'gas': gas
+            }
+            tags = {
+                'sensor': 'bme680',
+                'unit': 'metric'
+            }
+            self.aio.influx.write_data('bme680', fields, tags)

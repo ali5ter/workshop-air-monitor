@@ -48,9 +48,9 @@ The configuration for InfluxDB and Granfana is in [influx_grafana_config.env](se
 
 ### Configure InfluxDB
 
-1. Open the InfluxDB UI and set up the username, password, and org configured in the script.
+1. Open the InfluxDB UI and log in using the configured username and password. You will land in the configured org by default and buckets will already be defined if you've used the start up script mentioned above.
 2. Create a bucket using the name configured in the script.
-3. Generate a write token, and save that to ~/.config/influxdb-token
+3. Generate a write token, if you don't want to use the Admin's Token already set up by the script, and save that to ~/.config/influxdb-token on the system where the client monitor will run.
 
 ...
 

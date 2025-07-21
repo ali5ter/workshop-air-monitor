@@ -7,6 +7,7 @@ import sys
 import logging
 import signal
 
+from .influx import INFLUX
 from .accuweather import ACW
 # from .aio import AIO
 from .bme680 import BME680
@@ -30,6 +31,9 @@ class Monitor(object):
         # Default to running state
         self.running = True
 
+        # Set up connection to InfluxDB
+        self.influx = INFLUX()
+
         # Set upi connection to Adafruit IO
         # self.aio = AIO()
         self.aio = None  # Placeholder for AIO connection, if needed
@@ -50,7 +54,7 @@ class Monitor(object):
         signal.signal(signal.SIGINT, self.handle_exit)
         signal.signal(signal.SIGTERM, self.handle_exit)
 
-    def setup_logging(self, loglevel):
+    def setup_logging(self, loglevel=logging.INFO):
         numeric_level = getattr(logging, loglevel.upper(), None)
         if not isinstance(numeric_level, int):
             raise ValueError(f"Invalid log level: {loglevel}")
