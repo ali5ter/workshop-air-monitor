@@ -17,6 +17,9 @@ class INFLUX(object):
             env_path = os.path.abspath(env_file)
             load_dotenv(dotenv_path=env_path)
             logging.debug(f"Loaded environment variables from {env_path}")
+            logging.debug(f"INFLUXDB_URL: {os.getenv('INFLUXDB_URL')}")
+            logging.debug(f"INFLUXDB_ORG: {os.getenv('INFLUXDB_ORG')}")
+            logging.debug(f"INFLUXDB_BUCKET: {os.getenv('INFLUXDB_BUCKET')}")
         except Exception as e:
             logging.error(f"Failed to load environment variables: {e}")
             raise
