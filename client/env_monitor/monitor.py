@@ -18,8 +18,6 @@ from memory_profiler import memory_usage
 class Monitor(object):
 
     def __init__(self):
-
-        self.setup_logging()
         
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
