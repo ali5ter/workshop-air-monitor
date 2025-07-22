@@ -16,9 +16,9 @@ class INFLUX(object):
         try:
             env_path = os.path.abspath(env_file)
             load_dotenv(dotenv_path=env_path)
-            logger.debug(f"Loaded environment variables from {env_path}")
+            logging.debug(f"Loaded environment variables from {env_path}")
         except Exception as e:
-            logger.error(f"Failed to load environment variables: {e}")
+            logging.error(f"Failed to load environment variables: {e}")
             raise
 
         # InfluxDB connection parameters
@@ -35,9 +35,9 @@ class INFLUX(object):
         try:
             self.client = InfluxDBClient(url=self.url, token=self.token, org=self.org)
             self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
-            logger.info("Connected to InfluxDB.")
+            logging.info("Connected to InfluxDB.")
         except Exception as e:
-            logger.error(f"Error connecting to InfluxDB: {e}")
+            logging.error(f"Error connecting to InfluxDB: {e}")
             raise
 
     def write_data(self, measurement: str, fields: dict, tags: dict = None):
@@ -52,6 +52,6 @@ class INFLUX(object):
                 point = point.field(k, v)
 
             self.write_api.write(bucket=self.bucket, record=point)
-            logger.debug(f"Wrote data to InfluxDB: {fields}")
+            logging.debug(f"Wrote data to InfluxDB: {fields}")
         except Exception as e:
-            logger.error(f"Failed to write data to InfluxDB: {e}")
+            logging.error(f"Failed to write data to InfluxDB: {e}")
