@@ -28,11 +28,11 @@ class INFLUX(object):
             self.url = f"http://{server_ip}:{port}"
         else:
             raise ValueError("Missing SERVER_IP or INFLUXDB_PORT environment variables.")
-        self.token = os.getenv("INFLUXDB_TOKEN")
+        self.token = os.getenv("INFLUXDB_ADMIN_TOKEN")
         self.org = os.getenv("INFLUXDB_ORG")
         self.bucket = os.getenv("INFLUXDB_BUCKET")
         if not all([self.token, self.org, self.bucket]):
-            raise ValueError("Missing INFLUXDB_TOKEN, INFLUXDB_ORG, or INFLUXDB_BUCKET environment variables.")
+            raise ValueError("Missing INFLUXDB_ADMIN_TOKEN, INFLUXDB_ORG, or INFLUXDB_BUCKET environment variables.")
 
         # Create client
         try:
