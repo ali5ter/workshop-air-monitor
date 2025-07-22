@@ -17,22 +17,22 @@ class INFLUX(object):
             env_path = os.path.abspath(env_file)
             load_dotenv(dotenv_path=env_path)
             logging.debug(f"Loaded environment variables from {env_path}")
-            logging.debug(f"INFLUXDB_URL: {os.getenv('INFLUXDB_URL')}")
-            logging.debug(f"INFLUXDB_ORG: {os.getenv('INFLUXDB_ORG')}")
-            logging.debug(f"INFLUXDB_BUCKET: {os.getenv('INFLUXDB_BUCKET')}")
         except Exception as e:
             logging.error(f"Failed to load environment variables: {e}")
             raise
 
-        # InfluxDB connection parameters
-        self.url = os.getenv("INFLUXDB_URL")
+        # Assemble the InfluxDB connection parameters
+        server_ip = os.getenv("SERVER_IP")
+        port = os.getenv("INFLUXDB_PORT")
+        if server_ip and port:
+            self.url = f"http://{server_ip}:{port}"
+        else:
+            raise ValueError("Missing SERVER_IP or INFLUXDB_PORT environment variables.")
         self.token = os.getenv("INFLUXDB_TOKEN")
         self.org = os.getenv("INFLUXDB_ORG")
         self.bucket = os.getenv("INFLUXDB_BUCKET")
-
-        # Validate required values
-        if not all([self.url, self.token, self.org, self.bucket]):
-            raise ValueError("Missing required InfluxDB environment variables.")
+        if not all([self.token, self.org, self.bucket]):
+            raise ValueError("Missing INFLUXDB_TOKEN, INFLUXDB_ORG, or INFLUXDB_BUCKET environment variables.")
 
         # Create client
         try:
