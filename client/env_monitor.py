@@ -32,7 +32,6 @@ if __name__ == '__main__':
     )
     args = vars(all_args.parse_args())
 
-    monitor = Monitor()
-    monitor.setup_logging(args['loglevel'])
+    monitor = Monitor(loglevel=args['loglevel'])
     # monitor.connect_feeds(args['init'])
     monitor.start(duration_minutes=args['duration'])
