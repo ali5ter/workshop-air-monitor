@@ -18,6 +18,8 @@ from memory_profiler import memory_usage
 class Monitor(object):
 
     def __init__(self):
+
+        self.setup_logging()
         
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
@@ -54,7 +56,7 @@ class Monitor(object):
         signal.signal(signal.SIGINT, self.handle_exit)
         signal.signal(signal.SIGTERM, self.handle_exit)
 
-    def setup_logging(self, loglevel=logging.INFO):
+    def setup_logging(self, loglevel='INFO'):
         numeric_level = getattr(logging, loglevel.upper(), None)
         if not isinstance(numeric_level, int):
             raise ValueError(f"Invalid log level: {loglevel}")
