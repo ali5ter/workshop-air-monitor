@@ -27,18 +27,18 @@ class INFLUX(object):
         if server_ip and port:
             self.url = f"http://{server_ip}:{port}"
         else:
-            raise ValueError("Missing SERVER_IP or INFLUXDB_PORT environment variables.")
+            raise ValueError("Missing SERVER_IP or INFLUXDB_PORT environment variables")
         self.token = os.getenv("INFLUXDB_ADMIN_TOKEN")
         self.org = os.getenv("INFLUXDB_ORG")
         self.bucket = os.getenv("INFLUXDB_BUCKET")
         if not all([self.token, self.org, self.bucket]):
-            raise ValueError("Missing INFLUXDB_ADMIN_TOKEN, INFLUXDB_ORG, or INFLUXDB_BUCKET environment variables.")
+            raise ValueError("Missing INFLUXDB_ADMIN_TOKEN, INFLUXDB_ORG, or INFLUXDB_BUCKET environment variables")
 
         # Create client
         try:
             self.client = InfluxDBClient(url=self.url, token=self.token, org=self.org)
             self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
-            logging.info("Connected to InfluxDB.")
+            logging.info("Connected to InfluxDB")
         except Exception as e:
             logging.error(f"Error connecting to InfluxDB: {e}")
             raise
@@ -58,3 +58,10 @@ class INFLUX(object):
             logging.debug(f"Wrote data to InfluxDB: {fields}")
         except Exception as e:
             logging.error(f"Failed to write data to InfluxDB: {e}")
+
+    def close(self):
+        try:
+            self.client.close()
+            logging.info("Closed InfluxDB client")
+        except Exception as e:
+            logging.warning(f"Error closing InfluxDB client: {e}")

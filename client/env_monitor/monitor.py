@@ -77,24 +77,15 @@ class Monitor(object):
 
     def cleanup(self):
         logging.info('Cleaning up resources...')
-        # Close sensor connections if needed
         if hasattr(self.sds011, 'close'):
             self.sds011.close()
         if hasattr(self.bme680, 'close'):
             self.bme680.close()
         if hasattr(self.pir, 'close'):
             self.pir.close()
-        # If you used AIO or other network resources, close them here
+        if hasattr(self.influx, 'close'):
+            self.influx.close()
         logging.info('Cleanup complete.')
-
-    # def connect_feeds(self, initialize_feeds=False):
-
-    #     self.acw.add_feeds()
-    #     self.sds011.add_feeds()
-    #     self.bme680.add_feeds()
-    #     self.pir.add_feeds()
-
-    #     self.aio.connect_feeds(init=initialize_feeds)
 
     def run_loop(self, loop):
         self.acw.get_data(loop)
