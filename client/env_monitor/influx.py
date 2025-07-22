@@ -38,7 +38,7 @@ class INFLUX(object):
         try:
             self.client = InfluxDBClient(url=self.url, token=self.token, org=self.org)
             self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
-            logging.info("Connected to InfluxDB")
+            logging.info("Connected to InfluxDB on %s", self.url)
         except Exception as e:
             logging.error(f"Error connecting to InfluxDB: {e}")
             raise

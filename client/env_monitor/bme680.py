@@ -102,4 +102,4 @@ class BME680(object):
                 'sensor': 'bme680',
                 'unit': 'metric'
             }
-            self.aio.influx.write_data('bme680', fields, tags)
+            # self.influx.write_data('bme680', fields, tags)
