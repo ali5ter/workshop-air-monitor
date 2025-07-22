@@ -7,17 +7,19 @@ import sys
 import logging
 import signal
 
-from .influx import INFLUX
 from .accuweather import ACW
 # from .aio import AIO
 from .bme680 import BME680
 from .pir import PIR
 from .sds011 import SDS011
+from .influx import INFLUX
 from memory_profiler import memory_usage
 
 class Monitor(object):
 
     def __init__(self):
+
+        self.setup_logging()
         
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
