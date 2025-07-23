@@ -14,12 +14,6 @@ if __name__ == '__main__':
         description='Monitor sensors connected to RPi measuring environmental conditions'
     )
     all_args.add_argument(
-        '-I', '--init',
-        action="store_true", 
-        default=False, 
-        help='Initialize any feeds before starting the monitor'
-    )
-    all_args.add_argument(
         '--loglevel',
         default='INFO',
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
@@ -33,5 +27,4 @@ if __name__ == '__main__':
     args = vars(all_args.parse_args())
 
     monitor = Monitor(loglevel=args['loglevel'])
-    # monitor.connect_feeds(args['init'])
     monitor.start(duration_minutes=args['duration'])

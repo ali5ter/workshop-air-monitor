@@ -43,7 +43,7 @@ class INFLUX(object):
             logging.error(f"Error connecting to InfluxDB: {e}")
             raise
 
-    def write_data(self, measurement: str, fields: dict, tags: dict = None):
+    def write(self, measurement: str, fields: dict, tags: dict = None):
         try:
             point = Point(measurement).time(None, WritePrecision.NS)
 

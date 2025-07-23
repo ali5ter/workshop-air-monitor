@@ -8,7 +8,7 @@ import logging
 import signal
 
 from .accuweather import ACW
-# from .aio import AIO
+from .influx import INFLUX
 from .bme680 import BME680
 from .pir import PIR
 from .sds011 import SDS011
@@ -35,10 +35,6 @@ class Monitor(object):
 
         # Set up connection to InfluxDB
         self.influx = INFLUX()
-
-        # Set upi connection to Adafruit IO
-        # self.aio = AIO()
-        self.aio = None  # Placeholder for AIO connection, if needed
         
         # Set up connection to Accuweather
         self.acw = ACW(self.samples_day, self.aio)
@@ -88,11 +84,11 @@ class Monitor(object):
         logging.info('Cleanup complete.')
 
     def run_loop(self, loop):
-        self.acw.get_data(loop)
+        self.influx.write(self.acw.read(loop))
         self.bme680.current_pressure = self.acw.pressure
-        self.sds011.get_data(loop)
-        self.bme680.get_data(loop)
-        self.pir.get_data(loop)
+        self.influx.write(self.bme680.read(loop))
+        self.influx.write(self.sds011.read(loop))
+        self.influx.write(self.pir.get_data(loop))
 
     def start(self, duration_minutes=None):
         logging.info('Started monitor loop')

@@ -11,7 +11,7 @@ from urllib.error import HTTPError
 
 class ACW(object):
 
-    def __init__(self, samples_day, aio):
+    def __init__(self, samples_day):
 
         # Accuweather API base URL
         self.url_base = 'http://dataservice.accuweather.com'
@@ -46,17 +46,6 @@ class ACW(object):
         # Current sea level pressure
         self.pressure = 0
 
-        # Instance of the connection to Adafruit IO
-        # self.aio = aio
-
-    # def add_feeds(self):
-
-    #     self.aio.feed_names = self.aio.feed_names + [
-    #         'humidity local',
-    #         'pressure local',
-    #         'temperature local'
-    #     ]
-
     def get_data(self, loop):
 
         if (loop-1) % self.sample_time == 0:
@@ -80,7 +69,16 @@ class ACW(object):
             logging.info("\t Current relative humidity: %0.1f %%" % self.humidity)
             logging.info("\t Current pressure: %0.3f hPa (mb)" % self.pressure)
 
-        # Write current weather data to AIO feeds
-        # self.aio.send('humidity local', self.humidity)
-        # self.aio.send('pressure local', self.pressure)
-        # self.aio.send('temperature local', self.temp_imperial)
+            # Return Accuweather data in a format suitable for InfluxDB
+            return {
+                'measurement': 'local_weather',
+                'fields': {
+                    'temperature': self.temp_imperial,
+                    'humidity': self.humidity,
+                    'pressure': self.pressure
+                },
+                'tags': {
+                    'source': 'accuweather',
+                    'location': self.location_key
+                }
+            }

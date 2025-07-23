@@ -8,7 +8,7 @@ import adafruit_bme680
 
 class BME680(object):
 
-    def __init__(self, sample_time, aio):
+    def __init__(self, sample_time):
 
         # The temperature offset used for the BME680 sensor
         # @ref https://learn.adafruit.com/adafruit-bme680-humidity-temperature-barometic-pressure-voc-gas/python-circuitpython
@@ -20,8 +20,8 @@ class BME680(object):
         # The number of loops after which to fetch sensor data
         self.sample_time = sample_time
 
-        # Instance of the connection to Adafruit IO
-        # self.aio = aio
+        # Set up connection to InfluxDB
+        self.influx = influx
 
         # Sample counter used for rolling averages
         self.sample_count = 0
@@ -37,18 +37,6 @@ class BME680(object):
 
         # Connect to the BME680 sensor
         self.sensor = adafruit_bme680.Adafruit_BME680_I2C(board.I2C(), debug=False)
-
-    def add_feeds(self):
-
-        self.aio.feed_names = self.aio.feed_names + [
-            'temperature',
-            'temperature ave',
-            'pressure',
-            'pressure ave',
-            'humidity',
-            'humidity ave',
-            'gas'
-        ]
 
     def get_data(self, loop):
 
@@ -79,27 +67,19 @@ class BME680(object):
             ave_temperature = self.total_temperature/self.sample_count
             logging.info(f"\t Humidity ave = {ave_humidity}  Pressure ave = {ave_pressure}  Temperature ave = {ave_temperature}")
 
-            # Write BME680 data to AIO feeds
-            # self.aio.send('temperature', tempF)
-            # self.aio.send('temperature ave', ave_temperature)
-            # self.aio.send('gas', gas)
-            # self.aio.send('humidity', humidity)
-            # self.aio.send('humidity ave', ave_humidity)
-            # self.aio.send('pressure', pressure)
-            # self.aio.send('pressure ave', ave_pressure)
-
-            # Write BME680 data to InfluxDB
-            fields = {
-                'temperature': tempF,
-                'temperature_ave': ave_temperature,
-                'pressure': pressure,
-                'pressure_ave': ave_pressure,
-                'humidity': humidity,
-                'humidity_ave': ave_humidity,
-                'gas': gas
+            # Return BME680 data in a format suitable for InfluxDB
+            return {
+                'measurement': 'temperature_humidity_pressure',
+                'fields': {
+                    'temperature': tempF,
+                    'temperature_ave': ave_temperature,
+                    'pressure': pressure,
+                    'pressure_ave': ave_pressure,
+                    'humidity': humidity,
+                    'humidity_ave': ave_humidity,
+                    'gas': gas
+                },
+                'tags': {
+                    'sensor': 'bme680'
+                }
             }
-            tags = {
-                'sensor': 'bme680',
-                'unit': 'metric'
-            }
-            # self.influx.write_data('bme680', fields, tags)
