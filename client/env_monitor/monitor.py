@@ -84,10 +84,10 @@ class Monitor(object):
         logging.info('Cleanup complete.')
 
     def run_loop(self, loop):
-        self.influx.write(self.acw.read(loop))
+        self.influx.write(self.acw.get_data(loop))
         self.bme680.current_pressure = self.acw.pressure
-        self.influx.write(self.bme680.read(loop))
-        self.influx.write(self.sds011.read(loop))
+        self.influx.write(self.bme680.get_data(loop))
+        self.influx.write(self.sds011.get_data(loop))
         self.influx.write(self.pir.get_data(loop))
 
     def start(self, duration_minutes=None):
