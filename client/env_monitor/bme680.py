@@ -20,9 +20,6 @@ class BME680(object):
         # The number of loops after which to fetch sensor data
         self.sample_time = sample_time
 
-        # Set up connection to InfluxDB
-        self.influx = influx
-
         # Sample counter used for rolling averages
         self.sample_count = 0
 
