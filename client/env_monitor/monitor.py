@@ -37,16 +37,16 @@ class Monitor(object):
         self.influx = INFLUX()
         
         # Set up connection to Accuweather
-        self.acw = ACW(self.samples_day, self.aio)
+        self.acw = ACW(self.samples_day)
 
         # Set up connection to the SDS011 sensor
-        self.sds011 = SDS011(self.sample_time, self.samples_day, self.aio)
+        self.sds011 = SDS011(self.sample_time, self.samples_day)
 
-        # Set up the connection to the BME860 sensor
-        self.bme680 = BME680(self.sample_time, self.aio)
+        # Set up the connection to the BME680 sensor
+        self.bme680 = BME680(self.sample_time)
 
         # Set up the connection to the PIR sensor
-        self.pir = PIR(1, self.aio)
+        self.pir = PIR(1)
 
         # Register signal handlers
         signal.signal(signal.SIGINT, self.handle_exit)
