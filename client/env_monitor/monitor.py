@@ -24,15 +24,19 @@ class Monitor(object):
 
         # The API key for Accuweather
         self.accuweather_api_key = accuweather_api_key
+        logging.debug(f"Accuweather API key set: {accuweather_api_key}")
 
         # The Accuweather location key for fetching current conditions
         self.accuweather_location_key = accuweather_location_key
+        logging.debug(f"Accuweather location key set: {accuweather_location_key}")
 
         # The GPIO pin number for the PIR sensor
         self.pir_sensor_gpio_pin = pir_sensor_gpio_pin
+        logging.debug(f"PIR sensor GPIO pin set: {pir_sensor_gpio_pin}")
 
         # The server configuration file path
         self.server_config = server_config
+        logging.debug(f"Server configuration file set: {server_config}")
 
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
