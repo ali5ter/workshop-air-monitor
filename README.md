@@ -92,3 +92,11 @@ env_monitor.pl -d 2 --loglevel DEBUG
 Run the monitor as a daemon by using `systemd`. A [systemd Unit file template](client/env_monitor.service.template) is provided but the paths and user need to be updated appropriately.
 
 Use the [start_env_monitor_service.sh](client/start_env_monitor_service.sh) script to move the Unit file into the correct place, cycle systemd, and start up the monitor as a daemon.
+
+Now you should be able to reboot the RPi and the monitor will run automatically.
+
+You can tail the logs using
+
+```bash
+journalctl -u env_monitor.service -f
+```

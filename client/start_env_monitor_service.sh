@@ -18,8 +18,8 @@ sudo systemctl daemon-reload
 
 # Start the environment monitor service
 echo "🚀 Starting environment monitor service..."
-sudo systemctl enable env_monitor.service
-sudo systemctl start env_monitor.service
+sudo systemctl enable env_monitor.service # Enable the service to start on boot
+sudo systemctl start env_monitor.service # Start the service immediately
 
 # Check the status of the service to confirm it's running
 systemctl status env_monitor.service
@@ -35,7 +35,7 @@ echo "📜 Displaying the last 50 lines of the service log for debugging..."
 journalctl -u env_monitor.service -n 50 --no-pager
 
 echo "🔚 Environment monitor service setup complete."
-echo "You can check the service status with 'systemctl status env_monitor.service' and view logs with 'journalctl -u env_monitor.service'."
+echo "You can check the service status with 'systemctl status env_monitor.service' and view logs with 'journalctl -u env_monitor.service -f'."
 echo "To stop the service, use 'sudo systemctl stop env_monitor.service'."
 echo "To disable the service from starting on boot, use 'sudo systemctl disable env_monitor.service'."
 echo "To restart the service, use 'sudo systemctl restart env_monitor.service'."
