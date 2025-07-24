@@ -10,7 +10,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 class INFLUX(object):
 
-    def __init__(self, server_config='../server/.env'):
+    def __init__(self, server_config=None):
 
         # Load environment variables from .env file
         try:
