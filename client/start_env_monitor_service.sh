@@ -9,7 +9,7 @@ set -eou pipefail
 
 # Create systemd Unit file for the environment monitor service
 echo "📄 Creating systemd service file for environment monitor..."
-cp env_monitor.service.template /etc/systemd/system/env_monitor.service
+sudo cp env_monitor.service.template /etc/systemd/system/env_monitor.service
 
 # Reload systemd configuration to ensure the service file is recognized
 echo "🔄 Reloading systemd configuration..."
