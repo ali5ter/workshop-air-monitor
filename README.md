@@ -95,8 +95,20 @@ Use the [start_env_monitor_service.sh](client/start_env_monitor_service.sh) scri
 
 Now you should be able to reboot the RPi and the monitor will run automatically.
 
-You can tail the logs using
+Check the status using
+
+```bash
+systemctl status env_monitor.service
+```
+
+Tail the logs using
 
 ```bash
 journalctl -u env_monitor.service -f
+```
+
+Start and stop using
+
+```bash
+sudo systemctl [start|stop] env_monitor.service
 ```
