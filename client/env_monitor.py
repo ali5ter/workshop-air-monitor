@@ -15,9 +15,8 @@ if __name__ == '__main__':
     # Load environment variables from .env file in the current directory
     load_dotenv()
 
-    for key, value in os.environ.items():
-        print(f"{key}={value}")
-    
+    print(int(os.getenv('PIR_SENSOR_GPIO_PIN')))
+
     # Set up argument parser
     all_args = argparse.ArgumentParser(
         description='Monitor sensors connected to RPi measuring environmental conditions'
@@ -58,8 +57,8 @@ if __name__ == '__main__':
         help='Duration in minutes to run the monitor (optional, default is to run indefinitely)',
     )
     args = vars(all_args.parse_args())
-    
-    for arg, value in vars(args).items():
+
+    for arg, value in args.items():
         print(f"arg: {arg} = {value}")
 
     monitor = Monitor(loglevel=args['loglevel'],
