@@ -8,10 +8,10 @@ import digitalio
 
 class PIR(object):
 
-    def __init__(self, sample_time):
+    def __init__(self, sample_time, pir_sensor_gpio_pin=None):
 
         # THE GPIO pin to use as the PIR sensor digital input
-        self.input_pin = board.D4
+        self.input_pin = pir_sensor_gpio_pin
 
         # The number of loops after which to fetch sensor data
         self.sample_time = sample_time

@@ -17,9 +17,22 @@ from memory_profiler import memory_usage
 
 class Monitor(object):
 
-    def __init__(self, loglevel='INFO'):
+    def __init__(self, loglevel='INFO', accuweather_api_key=None, accuweather_location_key=None, pir_sensor_gpio_pin=None, server_config=None):
 
+        # The log level for the monitor
         self.setup_logging(loglevel=loglevel)
+
+        # The API key for Accuweather
+        self.accuweather_api_key = accuweather_api_key
+
+        # The Accuweather location key for fetching current conditions
+        self.accuweather_location_key = accuweather_location_key
+
+        # The GPIO pin number for the PIR sensor
+        self.pir_sensor_gpio_pin = pir_sensor_gpio_pin
+
+        # The server configuration file path
+        self.server_config = server_config
 
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
@@ -34,10 +47,10 @@ class Monitor(object):
         self.running = True
 
         # Set up connection to InfluxDB
-        self.influx = INFLUX()
-        
+        self.influx = INFLUX(self.server_config)
+
         # Set up connection to Accuweather
-        self.acw = ACW(self.samples_day)
+        self.acw = ACW(self.samples_day, self.accuweather_api_key, self.accuweather_location_key)
 
         # Set up connection to the SDS011 sensor
         self.sds011 = SDS011(self.sample_time, self.samples_day)
@@ -46,7 +59,7 @@ class Monitor(object):
         self.bme680 = BME680(self.sample_time)
 
         # Set up the connection to the PIR sensor
-        self.pir = PIR(1)
+        self.pir = PIR(1, self.pir_sensor_gpio_pin)
 
         # Register signal handlers
         signal.signal(signal.SIGINT, self.handle_exit)

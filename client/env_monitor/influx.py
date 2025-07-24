@@ -10,11 +10,11 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 class INFLUX(object):
 
-    def __init__(self, env_file='../server/.env'):
+    def __init__(self, server_config='../server/.env'):
 
         # Load environment variables from .env file
         try:
-            env_path = os.path.abspath(env_file)
+            env_path = os.path.abspath(server_config)
             load_dotenv(dotenv_path=env_path)
             logging.debug(f"Loaded environment variables from {env_path}")
         except Exception as e:

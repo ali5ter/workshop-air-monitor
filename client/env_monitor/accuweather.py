@@ -11,7 +11,7 @@ from urllib.error import HTTPError
 
 class ACW(object):
 
-    def __init__(self, samples_day):
+    def __init__(self, samples_day, accuweather_api_key=None, location_key=None):
 
         # Accuweather API base URL
         self.url_base = 'http://dataservice.accuweather.com'
@@ -20,13 +20,13 @@ class ACW(object):
         self.conditions_method = self.url_base + '/currentconditions/v1/{0}?apikey={1}&details=true'
 
         # File containing the Accuweather API access key
-        self.key_file = os.environ['HOME'] + '/.config/accuweather-key'
+        self.key_file = accuweather_api_key
         with open(self.key_file, 'r') as file:
             self.key = file.read().replace('\n', '')
 
         # Accuweather location key used to fetch current conditions
         # Found using /locations/v1/cities/search Accuweather API method
-        self.location_key = '329319'    # Cambridge, MA
+        self.location_key = location_key
 
         # Accuweather API call limit per 24 hours
         self.call_limit = 50 # Free licence limited to 50 API calls per day
