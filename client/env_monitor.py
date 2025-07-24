@@ -23,25 +23,25 @@ if __name__ == '__main__':
         '--server-config',
         type=str,
         default=os.getenv('SERVER_CONFIG'),
-        help='Path to the server configuration file'
+        help='Path to the server configuration file (optional, defined in .env file)'
     )
     all_args.add_argument(
         '--accuweather-api-key',
         type=str,
         default=os.getenv('ACCUWEATHER_API_KEY'),
-        help='Path to the Accuweather API key file'
+        help='Path to the Accuweather API key file (optional, defined in .env file)'
     )
     all_args.add_argument(
         '--accuweather-location-key',
         type=str,
         default=os.getenv('ACCUWEATHER_LOCATION_KEY'),
-        help='Accuweather location key for fetching current conditions'
+        help='Accuweather location key for fetching current conditions (optional, defined in .env file)'
     )
     all_args.add_argument(
         '--pir-sensor-gpio-pin',
         type=int,
         default=int(os.getenv('PIR_SENSOR_GPIO_PIN')),
-        help='GPIO pin number for the PIR sensor'
+        help='GPIO pin number for the PIR sensor (optional, defined in .env file)'
     )
     all_args.add_argument(
         '--loglevel',
