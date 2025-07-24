@@ -63,6 +63,8 @@ I'm still messing with this but will provide a Dashboard template at some point.
 
 The monitor application, [env_monitor.pl](client/env_monitor.py) runs on the client side. I run it on a Raspberry Pi Zero 2 with the attached environmental sensors described above.
 
+The environment variables that provide default configuration for the client are contained in the [.env](client/.env) file. Change this accordingly before you run the monitor application.
+
 ### Installing required dependencies
 
 The [setup.sh](client/setup.sh) script uses apt and pip to install libraries so that the python application running on the RPi can talk to the envornmental sensors. You only have to run this once and reboot the RPi to make sure the changes have taken before running the monitoring application.
@@ -71,7 +73,7 @@ You may get a warning saying, "Kernel module 'spi-dev' not found". Ignore that.
 
 After the sensor support is established, you can use [the test scripts](/client/test/) to see if the attached sensors are working.
 
-Note that in my hardware implementation, the PIR sensor was connected to GPIO pin 4. You can change that in the constructor of the [pir.py](client/env_monitor/pir.py) class code. Yes, I should make that part of configuration.
+Note that in my hardware implementation, the PIR sensor was connected to GPIO pin 4. This is configured in the [.env](client/.env) file.
 
 ### Runing the client
 
