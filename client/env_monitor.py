@@ -14,6 +14,9 @@ if __name__ == '__main__':
 
     # Load environment variables from .env file in the current directory
     load_dotenv()
+
+    for key, value in os.environ.items():
+        print(f"{key}={value}")
     
     # Set up argument parser
     all_args = argparse.ArgumentParser(
@@ -55,6 +58,9 @@ if __name__ == '__main__':
         help='Duration in minutes to run the monitor (optional, default is to run indefinitely)',
     )
     args = vars(all_args.parse_args())
+    
+    for arg, value in vars(args).items():
+        print(f"arg: {arg} = {value}")
 
     monitor = Monitor(loglevel=args['loglevel'],
                       accuweather_api_key=args['accuweather_api_key'],
