@@ -1,0 +1,15 @@
+[Unit]
+Description=Workshop Environment Monitor
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/alister/src/workshop-air-monitor/client/env_monitor.py
+WorkingDirectory=/home/alister/src/workshop-air-monitor/client
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=alister
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

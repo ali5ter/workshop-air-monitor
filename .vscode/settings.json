@@ -1,6 +1,0 @@
-{
-    "python.defaultInterpreterPath": "~/.pyenv/shims",
-    "python.analysis.extraPaths": [
-        "~/.pyenv/shims/*/site-packages"
-    ]
-}

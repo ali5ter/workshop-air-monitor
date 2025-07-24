@@ -1,32 +1,114 @@
-# Workshop Climate Monitor
+# Workshop Environment Monitor
 
 I wanted to monitor the air quality, temperature and pressure of my garage workshop using a single board computer (SBC) like a Raspberry Pi.
 
 As well as controlling my air filtration, sawdust collection and heating systems, I was curious to know baselines for general particulate matter, noxious gasses, pressure and humidity. I also wanted a way to trigger a camera from a motion sensor to record who was going in and out of the workshop.
 
-Instead of creating a web server to present graphs of collected data, I chose to [push data to feeds on Adafruit IO](https://adafruit-io-python-client.readthedocs.io/en/latest/data.html) where I could play with dashboarding the feed data.
+The collected data is pushed to InfluxDB and then visualized using Grafana.
 
-I could [trigger other services directly using IFTTT](https://platform.ifttt.com/docs/connect_api) but saw that [Adafruit IO already integrates with IFTTT](https://learn.adafruit.com/using-ifttt-with-adafruit-io).
+## Future considerations
 
-## Particulate matter monitoring
+I would like to [trigger other services directly using IFTTT](https://platform.ifttt.com/docs/connect_api). For example, turning on the heating system when the temperature drops below a specific reading, or starting a camera when motion is detected.
+
+## Environmental conditions being monitored
+
+### Particulate matter
 
 Inspired by [this article](https://www.raspberrypi.com/news/monitor-air-quality-with-a-raspberry-pi/), I figured I could monitor the airbourne sawdust that was not being gathered by my sawdust collection system. If it got above a certain level, I figured I could triger my dust filtration unit.
 
 Using [the SDS011 sensor](https://microcontrollerslab.com/wp-content/uploads/2020/12/NonA-PM-SDS011-Dust-sensor-datasheet.pdf) I could collect data on two standard sizes of particulate matter (PM). According to [the Air Quality Standards in my area](https://www3.epa.gov/region1/airquality/pm-aq-standards.html), the 10 micron particles (PM<sub>10</sub>) should not exceed 150 micrograms per cubic meter (μg/m3) based on a 24-hour average. Similarly, the small nasty stuff that can really hurt you, the 2.5 micron particles (PM<sub>2.5</sub>) should not exceed 35 micrograms per cubic meter (μg/m3) based on a 24-hour average.
 
-## Temperature, humidity, pressure and gas monitoring
+The client code for the SDS011 sensor is [sds011.py](client/env_monitor/sds011.py).
+
+### Temperature, humidity, pressure and gas
 
 Adafruit sell [the amazing BME680](https://learn.adafruit.com/adafruit-bme680-humidity-temperature-barometic-pressure-voc-gas) providing the remaining environmental sensing I wanted.
 
-I took advantage of the adafruit_blinka python library to use the CircuitPython hardware API that talks I2C and SPI protocols that sensors often use. Adafruit [explains this and how to install this lib onto your Linux SBC](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi) and I also put the associated commands into the [install.sh](install.sh) script for repeatability.
+I took advantage of the adafruit_blinka python library to use the CircuitPython hardware API that talks I2C and SPI protocols that sensors often use. Adafruit [explains this and how to install this lib onto your Linux SBC](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi). As explained below, I provide a script to install the nessesary sensor support.
 
+The client code for the BME680 sensor is [bme680.py](client/env_monitor/bme680.py).
 
-## Motion sensing
+I wanted a way to compare against current weather conditions, so used the Accuweather Service to fetch data for my location. This does require an Accuweather API access key which [you can register for free](https://developer.accuweather.com) but you're limited to one key and up to 50 API calls per day. The path of where you stored your key and the Accuweather location code are hardcoded in [accuweather.py](client/env_monitor/accuweather.py).
 
-I chose to use [the Pyroelectric ("Passive") InfraRed Sensor from Adafruit](https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor) to undersstand if someone was in the workshop. I figured that would be good to cross reference with environmental changes but also wanted a way to trigger a camera to at least understand who was in there. 
+### Motion
 
-## Camera module
+I chose to use [the Pyroelectric ("Passive") InfraRed Sensor from Adafruit](https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor) to understand if someone was in the workshop. I figured that would be good to cross reference with environmental changes but also wanted a way to trigger a camera to at least understand who was in there... who's not been putting tools back in the right place and all that.
 
-...
+The client code for the PIR sensor is [pir.py](client/env_monitor/pir.py).
 
+## Server side
 
+InfluxDB is being used to store the sensor data generated by the client side monitor application. Grafana is being used to vizualize this collected data. I used to use AdaFruit IO to do these things but couldn't afford the ongoing subscription.
+
+The InfluxDB and Grafana services are stood up as container based apps using Docker on a seperate system or the one running the monitor.
+
+### Running the server stack
+
+The [start_server_stack.sh](server/start_server_stack.sh) script will start up these services using [a Docker Compose definition](server/docker-compose.yml). Make sure you have docker installed because it just makes things so much easier.
+
+The configuration for InfluxDB and Granfana is in [.env](server/.env). Change this accordingly before you run the start script. These parameters are also used by the [influx.py](client/env_monitor/influx.py) client code class.
+
+If you make changes to things after running the start script, just use the following Docker Compose commands to cycle InfluxDB and Grafana
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
+### Grafana dashboard
+
+I'm still messing with this but will provide a Dashboard template at some point.
+
+## Client side
+
+The monitor application, [env_monitor.pl](client/env_monitor.py) runs on the client side. I run it on a Raspberry Pi Zero 2 with the attached environmental sensors described above.
+
+The environment variables that provide default configuration for the client are contained in the [.env](client/.env) file. Change this accordingly before you run the monitor application.
+
+### Installing required dependencies
+
+The [setup.sh](client/setup.sh) script uses apt and pip to install libraries so that the python application running on the RPi can talk to the envornmental sensors. You only have to run this once and reboot the RPi to make sure the changes have taken before running the monitoring application.
+
+You may get a warning saying, "Kernel module 'spi-dev' not found". Ignore that.
+
+After the sensor support is established, you can use [the test scripts](/client/test/) to see if the attached sensors are working.
+
+Note that in my hardware implementation, the PIR sensor was connected to GPIO pin 4. This is configured in the [.env](client/.env) file.
+
+### Runing the client
+
+Just run [env_monitor.py](client/env_monitor.py) from within the `client` directory.
+
+By default, the monitor will run indefinately but you can use the `--duration` option to say how many minutes you want to run the monitor. This is useful if you're debugging and can also change the log level using the `--loglevel` option.
+
+For example, to run the monitor for 2 minutes and see debug messages, use:
+
+``` bash
+env_monitor.pl -d 2 --loglevel DEBUG
+```
+
+### Running as a daemon
+
+Run the monitor as a daemon by using `systemd`. A [systemd Unit file template](client/env_monitor.service.template) is provided but the paths and user need to be updated appropriately.
+
+Use the [start_env_monitor_service.sh](client/start_env_monitor_service.sh) script to move the Unit file into the correct place, cycle systemd, and start up the monitor as a daemon.
+
+Now you should be able to reboot the RPi and the monitor will run automatically.
+
+Check the status using
+
+```bash
+systemctl status env_monitor.service
+```
+
+Tail the logs using
+
+```bash
+journalctl -u env_monitor.service -f
+```
+
+Start and stop using
+
+```bash
+sudo systemctl [start|stop] env_monitor.service
+```

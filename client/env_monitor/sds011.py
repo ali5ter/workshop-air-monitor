@@ -1,9 +1,13 @@
+# @file: sds011.py
+# @brief: SDS011 sensor client for fetching particulate matter data
+# @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
+
 import logging
 import serial
 
 class SDS011(object):
 
-    def __init__(self, sample_time, samples_day, aio):
+    def __init__(self, sample_time, samples_day):
 
         # The path to the serial devices
         self.serial_device = '/dev/ttyUSB0'
@@ -13,9 +17,6 @@ class SDS011(object):
 
         # The number of loops after which to write 24h data
         self.samples_day = samples_day
-
-        # Instance of the connection to Adafruit IO
-        self.aio = aio
 
         # Sample counter used for rolling averages
         self.sample_count = 0
@@ -28,17 +29,6 @@ class SDS011(object):
 
         # Connect with the SDS011 sensor
         self.sensor = serial.Serial(self.serial_device)
-
-    def add_feeds(self):
-
-        self.aio.feed_names = self.aio.feed_names + [
-            'pm10',
-            'pm10 ave',
-            'pm10 24h ave',
-            'pm2.5',
-            'pm2.5 ave',
-            'pm2.5 24h ave',
-        ]
 
     def get_data(self, loop):
 
@@ -62,14 +52,16 @@ class SDS011(object):
             ave_pm_large = self.total_pm_large/self.sample_count
             logging.info(f"\t PM2.5 ave = {ave_pm_small}  PM10 ave = {ave_pm_large}")
 
-            # Write SDS011 data to AIO feeds
-            self.aio.send('pm2.5', pm_small)
-            self.aio.send('pm10', pm_large)
-            self.aio.send('pm2.5 ave', ave_pm_small)
-            self.aio.send('pm10 ave', ave_pm_large)
-
-            # Write 24h SDS011 data to AIO feeds
-            if (loop-1) % self.samples_day == 0:
-                self.aio.send('pm2.4 24h ave', ave_pm_small)
-                self.aio.send('pm10 24h ave', ave_pm_large)
-                logging.info(f"\t PM2.5 24h ave = {ave_pm_small}  PM10 24h ave = {ave_pm_large}")
+            # Return SDS011 data in a format suitable for InfluxDB
+            return {
+                'measurement': 'particles',
+                'fields': {
+                    'pm2.5': pm_small,
+                    'pm10': pm_large,
+                    'pm2.5_ave': ave_pm_small,
+                    'pm10_ave': ave_pm_large
+                },
+                'tags': {
+                    'sensor': 'sds011'
+                }
+            }
