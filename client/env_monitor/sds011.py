@@ -1,5 +1,5 @@
 # @file: sds011.py
-# @brief: SDS011 sensor client for fetching air quality data
+# @brief: SDS011 sensor client for fetching particulate matter data
 # @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
 
 import logging
@@ -54,7 +54,7 @@ class SDS011(object):
 
             # Return SDS011 data in a format suitable for InfluxDB
             return {
-                'measurement': 'particulate_matter',
+                'measurement': 'particles',
                 'fields': {
                     'pm2.5': pm_small,
                     'pm10': pm_large,

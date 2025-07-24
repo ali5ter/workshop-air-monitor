@@ -66,7 +66,7 @@ class BME680(object):
 
             # Return BME680 data in a format suitable for InfluxDB
             return {
-                'measurement': 'temperature_humidity_pressure',
+                'measurement': 'climate',
                 'fields': {
                     'temperature': tempF,
                     'temperature_ave': ave_temperature,

@@ -71,7 +71,7 @@ class ACW(object):
 
             # Return Accuweather data in a format suitable for InfluxDB
             return {
-                'measurement': 'local_weather',
+                'measurement': 'weather',
                 'fields': {
                     'temperature': self.temp_imperial,
                     'humidity': self.humidity,
