@@ -24,7 +24,7 @@ The client code for the SDS011 sensor is [sds011.py](client/env_monitor/sds011.p
 
 Adafruit sell [the amazing BME680](https://learn.adafruit.com/adafruit-bme680-humidity-temperature-barometic-pressure-voc-gas) providing the remaining environmental sensing I wanted.
 
-I took advantage of the adafruit_blinka python library to use the CircuitPython hardware API that talks I2C and SPI protocols that sensors often use. Adafruit [explains this and how to install this lib onto your Linux SBC](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi). As explained below, I provide a script to install the nessesary sensor support. 
+I took advantage of the adafruit_blinka python library to use the CircuitPython hardware API that talks I2C and SPI protocols that sensors often use. Adafruit [explains this and how to install this lib onto your Linux SBC](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi). As explained below, I provide a script to install the nessesary sensor support.
 
 The client code for the BME680 sensor is [bme680.py](client/env_monitor/bme680.py).
 
@@ -55,7 +55,7 @@ docker compose down -v
 docker compose up -d
 ```
 
-### Grafana daskboard
+### Grafana dashboard
 
 I'm still messing with this but will provide a Dashboard template at some point.
 
@@ -75,9 +75,15 @@ Note that in my hardware implementation, the PIR sensor was connected to GPIO pi
 
 ### Runing the client
 
-Just run [env_monitor.py](client/env_monitor.py) from within the `client` directory. 
+Just run [env_monitor.py](client/env_monitor.py) from within the `client` directory.
 
 By default, the monitor will run indefinately but you can use the `--duration` option to say how many minutes you want to run the monitor. This is useful if you're debugging and can also change the log level using the `--loglevel` option.
+
+For example, to run the monitor for 2 minutes and see debug messages, use:
+
+``` bash
+env_monitor.pl -d 2 --loglevel DEBUG
+```
 
 ### Running as a daemon
 
