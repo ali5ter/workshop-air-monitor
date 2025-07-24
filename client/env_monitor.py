@@ -39,8 +39,8 @@ if __name__ == '__main__':
     )
     all_args.add_argument(
         '--pir-sensor-gpio-pin',
-        type=int,
-        default=int(os.getenv('PIR_SENSOR_GPIO_PIN')),
+        type=str,
+        default=os.getenv('PIR_SENSOR_GPIO_PIN'),
         help='GPIO pin number for the PIR sensor (optional, defined in .env file)'
     )
     all_args.add_argument(
