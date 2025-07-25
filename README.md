@@ -57,7 +57,7 @@ docker compose up -d
 
 ### Grafana dashboard
 
-I'm still messing with this but will provide a Dashboard template at some point.
+A dashboard called 'Workshop Climate Monitor' is configured in the Grafana instance that is started. The Docker compose definition also provides the configuration for the InfluxDB datasource. All this means is that you get a ready made, albeit very simple, dashboard that renders the data being sent to InfluxDB.
 
 ## Client side
 
