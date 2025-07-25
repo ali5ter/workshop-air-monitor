@@ -59,6 +59,8 @@ docker compose up -d
 
 A dashboard called 'Workshop Climate Monitor' is configured in the Grafana instance that is started. The Docker compose definition also provides the configuration for the InfluxDB datasource. All this means is that you get a ready made, albeit very simple, dashboard that renders the data being sent to InfluxDB.
 
+![Grafana dashboard displaying workshop climate monitor data including temperature, humidity, pressure, particulate matter, and motion sensor activity. The dashboard features multiple line graphs and gauges showing real-time sensor readings. The environment is a digital interface designed for monitoring air quality and workshop conditions. Text in the image includes Workshop Climate Monitor as the dashboard title and labels for each metric. The overall tone is informative and technical, emphasizing data visualization and environmental awareness.](/Workshop-Climate-Monitor-Workshop-Dashboards-Grafana.png?raw=true)
+
 ## Client side
 
 The monitor application, [env_monitor.pl](client/env_monitor.py) runs on the client side. I run it on a Raspberry Pi Zero 2 with the attached environmental sensors described above.

@@ -207,7 +207,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-GrYlRd"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
@@ -218,8 +218,8 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "scheme",
+            "fillOpacity": 0,
+            "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -227,7 +227,7 @@
             },
             "insertNulls": false,
             "lineInterpolation": "smooth",
-            "lineWidth": 3,
+            "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -257,7 +257,20 @@
           },
           "unit": "fahrenheit"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Indoor"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -269,7 +282,7 @@
       "options": {
         "legend": {
           "calcs": [],
-          "displayMode": "hidden",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": false
         },
@@ -301,78 +314,6 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "custom": {
-            "axisPlacement": "auto",
-            "fillOpacity": 70,
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineWidth": 0,
-            "spanNulls": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "humidity"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 8
-      },
-      "id": 2,
-      "options": {
-        "alignValue": "left",
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "mergeValues": true,
-        "rowHeight": 0.9,
-        "showValue": "auto",
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.0.2",
-      "targets": [
-        {
-          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")",
-          "refId": "A"
-        }
-      ],
-      "title": "Humidity",
-      "type": "state-timeline"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P951FEA4DE68E13C5"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -384,7 +325,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 25,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -392,7 +333,7 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -420,9 +361,126 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "humidity"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "climate humidity {sensor=\"bme680\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "right",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "query": "// Indoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Outdoor\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Humidity",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "pressurehpa"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "climate pressure {sensor=\"bme680\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -447,7 +505,7 @@
       "pluginVersion": "12.0.2",
       "targets": [
         {
-          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"pressure\")",
+          "query": "// Indoor pressure\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"pressure\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor pressure\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"pressure\")\n  |> yield(name: \"Outdoor\")",
           "refId": "A"
         }
       ],
@@ -509,7 +567,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "ohm"
         },
         "overrides": []
       },
@@ -540,7 +599,7 @@
           "refId": "A"
         }
       ],
-      "title": "Gas Resistance",
+      "title": "Gas Resistance (VOC)",
       "type": "timeseries"
     },
     {
