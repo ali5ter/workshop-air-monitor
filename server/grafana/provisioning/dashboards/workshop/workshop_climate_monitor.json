@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -286,7 +286,7 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"temperature\")",
+          "query": "// Indoor temperature\nindoor = from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"temperature\")\n  |> rename(columns: {_value: \"Indoor\"})\n\n// Outdoor temperature\noutdoor = from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"temperature\")\n  |> rename(columns: {_value: \"Outdoor\"})\n\n// Combine both streams\nunion(tables: [indoor, outdoor])",
           "refId": "A"
         }
       ],
@@ -648,5 +648,5 @@
   "timezone": "browser",
   "title": "Workshop Climate Monitor",
   "uid": "8494b962-b263-46c0-ae56-37fb60b4616d",
-  "version": 3
+  "version": 1
 }
