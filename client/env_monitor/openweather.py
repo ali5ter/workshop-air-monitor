@@ -35,6 +35,8 @@ class OpenWeather(object):
         self.call_limit = 24*60*60
 
         # The number of loops after which to fetch current weather conitions
+        logging.debug("Samples per day: %d", samples_day)
+        logging.debug("Call limit: %d", self.call_limit)
         self.sample_time = int(samples_day/self.call_limit)
 
         # Current metric temperature
