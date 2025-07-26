@@ -395,7 +395,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "weather temperature {location=\"329319\", source=\"accuweather\"}"
+              "options": "weather temperature {location=\"Cambridge\", source=\"openweather\"}"
             },
             "properties": [
               {
@@ -559,7 +559,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "weather humidity {location=\"329319\", source=\"accuweather\"}"
+              "options": "weather humidity {location=\"Cambridge\", source=\"openweather\"}"
             },
             "properties": [
               {
@@ -719,7 +719,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "weather pressure {location=\"329319\", source=\"accuweather\"}"
+              "options": "weather pressure {location=\"Cambridge\", source=\"openweather\"}"
             },
             "properties": [
               {
@@ -845,7 +845,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": false
         },
         "tooltip": {
           "hideZeros": false,
