@@ -71,7 +71,7 @@ class OpenWeather(object):
                 self.temp_imperial = (self.temp_metric * 9/5) + 32
                 self.humidity = data['main']['humidity']
                 self.pressure = data['main']['pressure']
-                self.location = data['id'] # Using city ID as location
+                self.location = data['name']
 
             logging.info("\t Current temperature: %0.1f C (%0.1f F)" % (self.temp_metric, self.temp_imperial))
             logging.info("\t Current relative humidity: %0.1f %%" % self.humidity)
