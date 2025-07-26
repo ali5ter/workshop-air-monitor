@@ -82,12 +82,12 @@ class OpenWeather(object):
             return {
                 'measurement': 'weather',
                 'fields': {
-                    'temperature': self.temp_imperial,
-                    'humidity': self.humidity,
-                    'pressure': self.pressure
+                    'temperature': float(self.temp_imperial),
+                    'humidity': float(self.humidity),
+                    'pressure': float(self.pressure)
                 },
                 'tags': {
                     'source': 'openweather',
-                    'location': self.location
+                    'location': str(self.location)
                 }
             }
