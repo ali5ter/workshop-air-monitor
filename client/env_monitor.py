@@ -26,16 +26,16 @@ if __name__ == '__main__':
         help='Path to the server configuration file (optional, defined in .env file)'
     )
     all_args.add_argument(
-        '--accuweather-api-key',
+        '--openweather-api-key',
         type=str,
-        default=os.getenv('ACCUWEATHER_API_KEY'),
-        help='Path to the Accuweather API key file (optional, defined in .env file)'
+        default=os.getenv('OPENWEATHER_API_KEY'),
+        help='Path to the OpenWeather API key file (optional, defined in .env file)'
     )
     all_args.add_argument(
-        '--accuweather-location-key',
+        '--openweather-location-key',
         type=str,
-        default=os.getenv('ACCUWEATHER_LOCATION_KEY'),
-        help='Accuweather location key for fetching current conditions (optional, defined in .env file)'
+        default=os.getenv('OPENWEATHER_LOCATION_KEY'),
+        help='OpenWeather location key for fetching current conditions (optional, defined in .env file)'
     )
     all_args.add_argument(
         '--pir-sensor-gpio-pin',
@@ -57,8 +57,8 @@ if __name__ == '__main__':
     args = vars(all_args.parse_args())
 
     monitor = Monitor(loglevel=args['loglevel'],
-                      accuweather_api_key=args['accuweather_api_key'],
-                      accuweather_location_key=args['accuweather_location_key'],
+                      openweather_api_key=args['openweather_api_key'],
+                      openweather_location_key=args['openweather_location_key'],
                       pir_sensor_gpio_pin=args['pir_sensor_gpio_pin'],
                       server_config=args['server_config'])
     monitor.start(duration_minutes=args['duration'])

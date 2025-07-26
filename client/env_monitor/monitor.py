@@ -7,7 +7,7 @@ import sys
 import logging
 import signal
 
-from .accuweather import ACW
+from .openweather import OpenWeather
 from .influx import INFLUX
 from .bme680 import BME680
 from .pir import PIR
@@ -17,18 +17,18 @@ from memory_profiler import memory_usage
 
 class Monitor(object):
 
-    def __init__(self, loglevel='INFO', accuweather_api_key=None, accuweather_location_key=None, pir_sensor_gpio_pin=None, server_config=None):
+    def __init__(self, loglevel='INFO', openweather_api_key=None, openweather_location_key=None, pir_sensor_gpio_pin=None, server_config=None):
 
         # The log level for the monitor
         self.setup_logging(loglevel=loglevel)
 
-        # The API key for Accuweather
-        self.accuweather_api_key = accuweather_api_key
-        logging.debug(f"Accuweather API key set: {accuweather_api_key}")
+        # The API key for OpenWeather
+        self.openweather_api_key = openweather_api_key
+        logging.debug(f"OpenWeather API key set: {self.openweather_api_key}")
 
-        # The Accuweather location key for fetching current conditions
-        self.accuweather_location_key = accuweather_location_key
-        logging.debug(f"Accuweather location key set: {accuweather_location_key}")
+        # The OpenWeather location key for fetching current conditions
+        self.openweather_location_key = openweather_location_key
+        logging.debug(f"OpenWeather location key set: {self.openweather_location_key}")
 
         # The GPIO pin number for the PIR sensor
         self.pir_sensor_gpio_pin = pir_sensor_gpio_pin
@@ -53,8 +53,8 @@ class Monitor(object):
         # Set up connection to InfluxDB
         self.influx = INFLUX(self.server_config)
 
-        # Set up connection to Accuweather
-        self.acw = ACW(self.samples_day, self.accuweather_api_key, self.accuweather_location_key)
+        # Set up connection to OpenWeather
+        self.openweather = OpenWeather(self.samples_day, self.openweather_api_key, self.openweather_location_key)
 
         # Set up connection to the SDS011 sensor
         self.sds011 = SDS011(self.sample_time, self.samples_day)
@@ -101,10 +101,10 @@ class Monitor(object):
         logging.info('Cleanup complete.')
 
     def run_loop(self, loop):
-        for sensor in [self.acw, self.bme680, self.sds011, self.pir]:
+        for sensor in [self.openweather, self.bme680, self.sds011, self.pir]:
             data = sensor.get_data(loop)
-            if sensor == self.acw:
-                self.bme680.current_pressure = self.acw.pressure
+            if sensor == self.openweather:
+                self.bme680.current_pressure = self.openweather.pressure
             if data:
                 self.influx.write(**data)
 
