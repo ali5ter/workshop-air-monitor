@@ -28,7 +28,7 @@ I took advantage of the adafruit_blinka python library to use the CircuitPython 
 
 The client code for the BME680 sensor is [bme680.py](client/env_monitor/bme680.py).
 
-I wanted a way to compare against current weather conditions, so used the Accuweather Service to fetch data for my location. This does require an Accuweather API access key which [you can register for free](https://developer.accuweather.com) but you're limited to one key and up to 50 API calls per day. The path of where you stored your key and the Accuweather location code are hardcoded in [accuweather.py](client/env_monitor/accuweather.py).
+I wanted a way to compare against current weather conditions, so used the OpenWeather Service to fetch data for my location. This does require an OpenWeather API access key which [you can recieve for free](https://openweathermap.org). The free account linits you to 60 calls/minute but that more than enough. The path of where you stored your key and the OpenWeather location name is configured in the [.env](client/.env).
 
 ### Motion
 
