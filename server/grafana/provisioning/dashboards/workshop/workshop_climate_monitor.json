@@ -40,7 +40,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 25,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -78,7 +78,52 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Smoothed Rolling Avg"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pm2.5 sds011"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -103,7 +148,7 @@
       "pluginVersion": "12.0.2",
       "targets": [
         {
-          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm2.5\")",
+          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm2.5\")\n\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm2.5\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Rolling Avg\")",
           "refId": "A"
         }
       ],
@@ -129,7 +174,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 25,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -167,7 +212,52 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Smoothed Rolling Avg sds011"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pm10 sds011"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -192,7 +282,7 @@
       "pluginVersion": "12.0.2",
       "targets": [
         {
-          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm10\")",
+          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm10\")\n\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm10\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Rolling Avg\")",
           "refId": "A"
         }
       ],
@@ -261,12 +351,69 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Indoor"
+              "options": "climate Smoothed Rolling Avg {sensor=\"bme680\"}"
             },
             "properties": [
               {
                 "id": "custom.fillOpacity",
                 "value": 20
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "climate temperature {sensor=\"bme680\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "weather temperature {location=\"329319\", source=\"accuweather\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
               }
             ]
           }
@@ -299,7 +446,7 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "query": "// Indoor temperature\nindoor = from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"temperature\")\n  |> rename(columns: {_value: \"Indoor\"})\n\n// Outdoor temperature\noutdoor = from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"temperature\")\n  |> rename(columns: {_value: \"Outdoor\"})\n\n// Combine both streams\nunion(tables: [indoor, outdoor])",
+          "query": "// Indoor temperature\nindoor = from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"temperature\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor temperature\noutdoor = from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"temperature\")\n  |> yield(name: \"Outdoor\")\n\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"temperature\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Indoor Rolling Avg\")\n",
           "refId": "A"
         }
       ],
@@ -368,12 +515,69 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "climate humidity {sensor=\"bme680\"}"
+              "options": "climate Smoothed Rolling Avg {sensor=\"bme680\"}"
             },
             "properties": [
               {
                 "id": "custom.fillOpacity",
                 "value": 20
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "climate humidity {sensor=\"bme680\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "weather humidity {location=\"329319\", source=\"accuweather\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
               }
             ]
           }
@@ -402,7 +606,7 @@
       "pluginVersion": "12.0.2",
       "targets": [
         {
-          "query": "// Indoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Outdoor\")",
+          "query": "// Indoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Outdoor\")\n\n  from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Indoor Rolling Avg\")",
           "refId": "A"
         }
       ],
@@ -471,12 +675,69 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "climate pressure {sensor=\"bme680\"}"
+              "options": "climate Smoothed Rolling Avg {sensor=\"bme680\"}"
             },
             "properties": [
               {
                 "id": "custom.fillOpacity",
                 "value": 20
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "climate pressure {sensor=\"bme680\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "weather pressure {location=\"329319\", source=\"accuweather\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
               }
             ]
           }
@@ -505,7 +766,7 @@
       "pluginVersion": "12.0.2",
       "targets": [
         {
-          "query": "// Indoor pressure\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"pressure\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor pressure\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"pressure\")\n  |> yield(name: \"Outdoor\")",
+          "query": "// Indoor pressure\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"pressure\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor pressure\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"pressure\")\n  |> yield(name: \"Outdoor\")\n\n  from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"pressure\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Indoor Rolling Avg\")",
           "refId": "A"
         }
       ],
