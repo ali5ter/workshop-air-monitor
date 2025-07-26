@@ -5,7 +5,7 @@
 # @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
 
 from .monitor import Monitor
-from .accuweather import ACW
+from .openweather import OpenWeather
 from .sds011 import SDS011
 from .bme680 import BME680
 from .pir import PIR
