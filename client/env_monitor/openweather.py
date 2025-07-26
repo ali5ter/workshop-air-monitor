@@ -89,6 +89,6 @@ class OpenWeather(object):
                 },
                 'tags': {
                     'source': 'accuweather',
-                    'location': self.location_key
+                    'location': self.location
                 }
             }
