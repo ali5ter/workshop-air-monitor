@@ -28,7 +28,9 @@ I took advantage of the adafruit_blinka python library to use the CircuitPython 
 
 The client code for the BME680 sensor is [bme680.py](client/env_monitor/bme680.py).
 
-I wanted a way to compare against current weather conditions, so used the OpenWeather Service to fetch data for my location. This does require an OpenWeather API access key which [you can recieve for free](https://openweathermap.org). The free account linits you to 60 calls/minute but that more than enough. The path of where you stored your key and the OpenWeather location name is configured in the [.env](client/.env).
+I wanted a way to compare against current weather conditions, so used [the OpenWeather service](https://openweathermap.org) to fetch data for my location. You can get an API key for free and while you're limited to 60 calls/minute, that's more than enough. The path of where you stored your key and the OpenWeather location name is configured in the [.env](client/.env).
+
+The client code for communicating with the OpenWeather service is [openweather.py](client/env_monitor/openweather.py).
 
 ### Motion
 
@@ -57,7 +59,7 @@ docker compose up -d
 
 ### Grafana dashboard
 
-A dashboard called 'Workshop Climate Monitor' is configured in the Grafana instance that is started. The Docker compose definition also provides the configuration for the InfluxDB datasource. All this means is that you get a ready made, albeit very simple, dashboard that renders the data being sent to InfluxDB.
+A dashboard called 'Workshop Climate Monitor' is configured in the Grafana instance that is started. The Docker compose definition also provides the configuration for the InfluxDB datasource. This means you get a ready made, albeit very simple, dashboard that renders the data being sent to InfluxDB.
 
 ![Grafana dashboard displaying workshop climate monitor data including temperature, humidity, pressure, particulate matter, and motion sensor activity. The dashboard features multiple line graphs and gauges showing real-time sensor readings. The environment is a digital interface designed for monitoring air quality and workshop conditions. Text in the image includes Workshop Climate Monitor as the dashboard title and labels for each metric. The overall tone is informative and technical, emphasizing data visualization and environmental awareness.](/Workshop-Climate-Monitor-Workshop-Dashboards-Grafana.png?raw=true)
 
