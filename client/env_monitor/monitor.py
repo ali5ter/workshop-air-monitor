@@ -54,7 +54,7 @@ class Monitor(object):
         self.influx = INFLUX(self.server_config)
 
         # Set up connection to OpenWeather
-        self.openweather = OpenWeather(self.samples_day, self.openweather_api_key, self.openweather_location_key)
+        self.openweather = OpenWeather(self.sample_time, self.openweather_api_key, self.openweather_location_key)
 
         # Set up connection to the SDS011 sensor
         self.sds011 = SDS011(self.sample_time, self.samples_day)

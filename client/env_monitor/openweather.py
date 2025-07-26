@@ -11,7 +11,7 @@ from urllib.error import HTTPError
 
 class OpenWeather(object):
 
-    def __init__(self, samples_day, openweather_api_key=None, location=None):
+    def __init__(self, sample_time, openweather_api_key=None, location=None):
 
         # OpenWeather API base URL
         self.url_base = 'http://api.openweathermap.org/data/2.5/weather'
@@ -31,13 +31,8 @@ class OpenWeather(object):
         with open(self.key_file, 'r') as file:
             self.key = file.read().replace('\n', '')
 
-        # OpenWeather API allows 60 calls per minute
-        self.call_limit = 24*60*60
-
-        # The number of loops after which to fetch current weather conitions
-        logging.debug("Samples per day: %d", samples_day)
-        logging.debug("Call limit: %d", self.call_limit)
-        self.sample_time = int(samples_day/self.call_limit)
+        # The number of loops after which to fetch sensor data
+        self.sample_time = sample_time
 
         # Current metric temperature
         self.temp_metric = 0
@@ -58,7 +53,6 @@ class OpenWeather(object):
         self.description = ""
 
     def get_data(self, loop):
-        logging.debug("loop: %d", loop)
 
         if (loop-1) % self.sample_time == 0:
             try:
