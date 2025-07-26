@@ -65,19 +65,18 @@ class OpenWeather(object):
                 logging.error('Other error: %s', err)
             else:
                 data = r.json()
+                # Description of json data: https://openweathermap.org/current
                 logging.debug("OpenWeather data: %s", json.dumps(data, indent=4))
                 self.temp_metric = data['main']['temp']
                 self.temp_imperial = (self.temp_metric * 9/5) + 32
                 self.humidity = data['main']['humidity']
                 self.pressure = data['main']['pressure']
-                self.location = data['name']
-                self.description = data['weather'][0]['description']
+                self.location = data['id'] # Using city ID as location
 
             logging.info("\t Current temperature: %0.1f C (%0.1f F)" % (self.temp_metric, self.temp_imperial))
             logging.info("\t Current relative humidity: %0.1f %%" % self.humidity)
             logging.info("\t Current pressure: %0.3f hPa (mb)" % self.pressure)
             logging.info("\t Location: %s" % self.location)
-            logging.info("\t Conditions: %s" % self.description)
 
             # Return OpenWeather data in a format suitable for InfluxDB
             return {
@@ -88,7 +87,7 @@ class OpenWeather(object):
                     'pressure': self.pressure
                 },
                 'tags': {
-                    'source': 'accuweather',
+                    'source': 'openweather',
                     'location': self.location
                 }
             }
