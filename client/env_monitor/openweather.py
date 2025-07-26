@@ -58,6 +58,7 @@ class OpenWeather(object):
         self.description = ""
 
     def get_data(self, loop):
+        logging.debug("loop: %d", loop)
 
         if (loop-1) % self.sample_time == 0:
             try:
