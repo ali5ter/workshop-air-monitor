@@ -29,40 +29,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "mode": "thresholds"
           },
           "mappings": [],
           "thresholds": {
@@ -76,54 +43,10 @@
                 "value": 80
               }
             ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Smoothed Rolling Avg"
-            },
-            "properties": [
-              {
-                "id": "custom.fillOpacity",
-                "value": 20
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "pm2.5 sds011"
-            },
-            "properties": [
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "dash": [
-                    0,
-                    10
-                  ],
-                  "fill": "dot"
-                }
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "super-light-blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
+          "unit": "fahrenheit"
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
@@ -131,163 +54,33 @@
         "x": 0,
         "y": 0
       },
-      "id": 5,
+      "id": 8,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "hidden",
-          "placement": "right",
-          "showLegend": false
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
       "pluginVersion": "12.0.2",
       "targets": [
         {
-          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm2.5\")\n\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm2.5\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Rolling Avg\")",
+          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -5m)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"temperature\")\n  |> last()",
           "refId": "A"
         }
       ],
-      "title": "PM 2.5",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P951FEA4DE68E13C5"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Smoothed Rolling Avg sds011"
-            },
-            "properties": [
-              {
-                "id": "custom.fillOpacity",
-                "value": 20
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "pm10 sds011"
-            },
-            "properties": [
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "dash": [
-                    0,
-                    10
-                  ],
-                  "fill": "dot"
-                }
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "super-light-blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "id": 6,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "hidden",
-          "placement": "right",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.0.2",
-      "targets": [
-        {
-          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm10\")\n\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm10\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Rolling Avg\")",
-          "refId": "A"
-        }
-      ],
-      "title": "PM 10",
-      "type": "timeseries"
+      "title": "Current Temperature",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -422,8 +215,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 8
+        "x": 12,
+        "y": 0
       },
       "id": 1,
       "options": {
@@ -480,7 +273,7 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "smooth",
+            "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -508,14 +301,13 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "humidity"
+          }
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "climate Smoothed Rolling Avg {sensor=\"bme680\"}"
+              "options": "Smoothed Rolling Avg"
             },
             "properties": [
               {
@@ -534,41 +326,9 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "climate humidity {sensor=\"bme680\"}"
+              "options": "pm2.5 sds011"
             },
             "properties": [
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "dash": [
-                    10,
-                    10
-                  ],
-                  "fill": "dash"
-                }
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "weather humidity {location=\"Cambridge\", source=\"openweather\"}"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "super-light-blue",
-                  "mode": "fixed"
-                }
-              },
               {
                 "id": "custom.lineStyle",
                 "value": {
@@ -578,6 +338,13 @@
                   ],
                   "fill": "dot"
                 }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
               }
             ]
           }
@@ -586,10 +353,10 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
+        "x": 0,
         "y": 8
       },
-      "id": 2,
+      "id": 5,
       "options": {
         "legend": {
           "calcs": [],
@@ -606,11 +373,145 @@
       "pluginVersion": "12.0.2",
       "targets": [
         {
-          "query": "// Indoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Outdoor\")\n\n  from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Indoor Rolling Avg\")",
+          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm2.5\")\n\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm2.5\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Rolling Avg\")",
           "refId": "A"
         }
       ],
-      "title": "Humidity",
+      "title": "PM 2.5",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Smoothed Rolling Avg sds011"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pm10 sds011"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "right",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm10\")\n\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"particles\")\n  |> filter(fn: (r) => r._field == \"pm10\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Rolling Avg\")",
+          "refId": "A"
+        }
+      ],
+      "title": "PM 10",
       "type": "timeseries"
     },
     {
@@ -800,7 +701,7 @@
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "linear",
+            "lineInterpolation": "smooth",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -829,9 +730,79 @@
               }
             ]
           },
-          "unit": "ohm"
+          "unit": "humidity"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "climate Smoothed Rolling Avg {sensor=\"bme680\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 20
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "climate humidity {sensor=\"bme680\"}"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "weather humidity {location=\"Cambridge\", source=\"openweather\"}"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -839,12 +810,12 @@
         "x": 12,
         "y": 16
       },
-      "id": 4,
+      "id": 2,
       "options": {
         "legend": {
           "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
+          "displayMode": "hidden",
+          "placement": "right",
           "showLegend": false
         },
         "tooltip": {
@@ -856,11 +827,11 @@
       "pluginVersion": "12.0.2",
       "targets": [
         {
-          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"gas\")",
+          "query": "// Indoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Indoor\")\n\n// Outdoor humidity\nfrom(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"weather\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> yield(name: \"Outdoor\")\n\n  from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"humidity\")\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> movingAverage(n: 5)\n  |> map(fn: (r) => ({ r with _field: \"Smoothed Rolling Avg\" }))\n  |> yield(name: \"Indoor Rolling Avg\")",
           "refId": "A"
         }
       ],
-      "title": "Gas Resistance (VOC)",
+      "title": "Humidity",
       "type": "timeseries"
     },
     {
@@ -951,6 +922,96 @@
       ],
       "title": "Motion",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ohm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "query": "from(bucket: \"workshop_sensors\")\n  |> range(start: -6h)\n  |> filter(fn: (r) => r._measurement == \"climate\")\n  |> filter(fn: (r) => r._field == \"gas\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Gas Resistance (VOC)",
+      "type": "timeseries"
     }
   ],
   "preload": false,
@@ -968,5 +1029,5 @@
   "timezone": "browser",
   "title": "Workshop Climate Monitor",
   "uid": "8494b962-b263-46c0-ae56-37fb60b4616d",
-  "version": 1
+  "version": 2
 }

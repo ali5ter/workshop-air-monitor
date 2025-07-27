@@ -50,7 +50,7 @@ The [start_server_stack.sh](server/start_server_stack.sh) script will start up t
 
 The configuration for InfluxDB and Granfana is in [.env](server/.env). Change this accordingly before you run the start script. These parameters are also used by the [influx.py](client/env_monitor/influx.py) client code class.
 
-If you make changes to things after running the start script, just use the following Docker Compose commands to cycle InfluxDB and Grafana
+If you make changes to things after running the start script, just use the following Docker Compose commands to cycle InfluxDB and Grafana...
 
 ```bash
 docker compose down -v
@@ -62,6 +62,8 @@ docker compose up -d
 A dashboard called 'Workshop Climate Monitor' is configured in the Grafana instance that is started. The Docker compose definition also provides the configuration for the InfluxDB datasource. This means you get a ready made, albeit very simple, dashboard that renders the data being sent to InfluxDB.
 
 ![Grafana dashboard displaying workshop climate monitor data including temperature, humidity, pressure, particulate matter, and motion sensor activity. The dashboard features multiple line graphs and gauges showing real-time sensor readings. The environment is a digital interface designed for monitoring air quality and workshop conditions. Text in the image includes Workshop Climate Monitor as the dashboard title and labels for each metric. The overall tone is informative and technical, emphasizing data visualization and environmental awareness.](/Workshop-Climate-Monitor-Workshop-Dashboards-Grafana.png?raw=true)
+
+Note that provisioned Grafana Dashboards, like this one, are read-only inside the Grafana UI. If you want to save any edits you make to the Dashboard from the UI, you have to save the JSON file, overwrite the JSON in [workshop_climate_monitor.json](server/grafana/provisioning/dashboards/workshop/workshop_climate_monitor.json), then restart Grafana using Docker Compose, as described above.
 
 ## Client side
 
