@@ -301,7 +301,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "μg/m3"
         },
         "overrides": [
           {
@@ -435,7 +436,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "μg/m3"
         },
         "overrides": [
           {
@@ -842,56 +844,48 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
           "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 25,
-            "gradientMode": "none",
+            "fillOpacity": 70,
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
             "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "lineWidth": 0,
+            "spanNulls": false
           },
           "mappings": [],
+          "max": 1,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "motion pir"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "continuous-greens"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -901,12 +895,15 @@
       },
       "id": 7,
       "options": {
+        "alignValue": "left",
         "legend": {
-          "calcs": [],
-          "displayMode": "hidden",
-          "placement": "right",
+          "displayMode": "list",
+          "placement": "bottom",
           "showLegend": false
         },
+        "mergeValues": true,
+        "rowHeight": 0.9,
+        "showValue": "never",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -921,7 +918,7 @@
         }
       ],
       "title": "Motion",
-      "type": "timeseries"
+      "type": "state-timeline"
     },
     {
       "datasource": {
@@ -1029,5 +1026,5 @@
   "timezone": "browser",
   "title": "Workshop Climate Monitor",
   "uid": "8494b962-b263-46c0-ae56-37fb60b4616d",
-  "version": 2
+  "version": 3
 }
