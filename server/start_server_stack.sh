@@ -34,6 +34,21 @@ else
   echo "✅ Docker is accessible."
 fi
 
+ENV_FILE=".env"
+TEMPLATE_FILE=".env.template"
+
+if [ ! -f "$ENV_FILE" ]; then
+  echo "⚠️  No $ENV_FILE file found."
+  if [ -f "$TEMPLATE_FILE" ]; then
+    echo "📄 Copying from template..."
+    cp "$TEMPLATE_FILE" "$ENV_FILE"
+    echo "✅ Created $ENV_FILE. Please edit it before rerunning this script."
+  else
+    echo "❌ Missing $TEMPLATE_FILE too. Cannot proceed."
+  fi
+  exit 1
+fi
+
 echo "📦 Generating Grafana datasource config from template..."
 envsubst < ./grafana/provisioning/datasources/influxdb.yaml.template > ./grafana/provisioning/datasources/influxdb.yaml
 

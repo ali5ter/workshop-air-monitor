@@ -66,6 +66,21 @@ for module in i2c-dev spi-dev; do
     fi
 done
 
+ENV_FILE=".env"
+TEMPLATE_FILE=".env.template"
+
+if [ ! -f "$ENV_FILE" ]; then
+  echo "⚠️  No $ENV_FILE file found."
+  if [ -f "$TEMPLATE_FILE" ]; then
+    echo "📄 Copying from template..."
+    cp "$TEMPLATE_FILE" "$ENV_FILE"
+    echo "✅ Created $ENV_FILE. Please edit it before rerunning this script."
+  else
+    echo "❌ Missing $TEMPLATE_FILE too. Cannot proceed."
+  fi
+  exit 1
+fi
+
 echo ""
 echo "✅ Setup complete. A reboot is required to apply changes."
 echo "   - UART is enabled and serial console is disabled"

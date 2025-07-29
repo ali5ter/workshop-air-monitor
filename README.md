@@ -48,7 +48,7 @@ The InfluxDB and Grafana services are stood up as container based apps using Doc
 
 The [start_server_stack.sh](server/start_server_stack.sh) script will start up these services using [a Docker Compose definition](server/docker-compose.yml). Make sure you have docker installed because it just makes things so much easier.
 
-The configuration for InfluxDB and Granfana is in [.env](server/.env). Change this accordingly before you run the start script. These parameters are also used by the [influx.py](client/env_monitor/influx.py) client code class.
+The configuration for InfluxDB and Granfana is in an environment file. Copy the [.env.template](server/.env.template) file to a .env file. Then edit this accordingly before you run the start script.
 
 If you make changes to things after running the start script, just use the following Docker Compose commands to cycle InfluxDB and Grafana...
 
@@ -69,7 +69,7 @@ Note that provisioned Grafana Dashboards, like this one, are read-only inside th
 
 The monitor application, [env_monitor.pl](client/env_monitor.py) runs on the client side. I run it on a Raspberry Pi Zero 2 with the attached environmental sensors described above.
 
-The environment variables that provide default configuration for the client are contained in the [.env](client/.env) file. Change this accordingly before you run the monitor application.
+The configuration for the client application is in an environment file. Copy the [.env.template](client/.env.template) file to a .env file. Edit this accordingly before you run the monitor application.
 
 ### Installing required dependencies
 
