@@ -26,6 +26,12 @@ if __name__ == '__main__':
         help='Path to the server configuration file (optional, defined in .env file)'
     )
     all_args.add_argument(
+        '--cache-file',
+        type=str,
+        default=os.getenv('CACHE_FILE'),
+        help='Path to the cache file (optional, defined in .env file)'
+    )
+    all_args.add_argument(
         '--openweather-api-key',
         type=str,
         default=os.getenv('OPENWEATHER_API_KEY'),
@@ -60,5 +66,6 @@ if __name__ == '__main__':
                       openweather_api_key=args['openweather_api_key'],
                       openweather_location_key=args['openweather_location_key'],
                       pir_sensor_gpio_pin=args['pir_sensor_gpio_pin'],
-                      server_config=args['server_config'])
+                      server_config=args['server_config'],
+                      cache_file=args['cache_file'])
     monitor.start(duration_minutes=args['duration'])

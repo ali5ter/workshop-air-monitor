@@ -9,3 +9,5 @@ from .openweather import OpenWeather
 from .sds011 import SDS011
 from .bme680 import BME680
 from .pir import PIR
+from .wificheck import WifiStatus
+from .datacache import DataCache

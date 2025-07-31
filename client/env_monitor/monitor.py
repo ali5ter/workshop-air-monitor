@@ -8,16 +8,18 @@ import logging
 import signal
 
 from .openweather import OpenWeather
-from .influx import INFLUX
+from .influx import InfluxDB
 from .bme680 import BME680
 from .pir import PIR
 from .sds011 import SDS011
-from .influx import INFLUX
+from .wificheck import WifiStatus
+from .datacache import DataCache
 from memory_profiler import memory_usage
 
 class Monitor(object):
 
-    def __init__(self, loglevel='INFO', openweather_api_key=None, openweather_location_key=None, pir_sensor_gpio_pin=None, server_config=None):
+    def __init__(self, loglevel='INFO', openweather_api_key=None, openweather_location_key=None,
+                 pir_sensor_gpio_pin=None, server_config=None, cache_file=None):
 
         # The log level for the monitor
         self.setup_logging(loglevel=loglevel)
@@ -38,6 +40,10 @@ class Monitor(object):
         self.server_config = server_config
         logging.debug(f"Server configuration file set: {server_config}")
 
+        # The cache file path for storing monitor data when offline
+        self.cache_file = cache_file
+        logging.debug(f"Cache file set: {cache_file}")
+
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
 
@@ -51,7 +57,13 @@ class Monitor(object):
         self.running = True
 
         # Set up connection to InfluxDB
-        self.influx = INFLUX(self.server_config)
+        self.influx = InfluxDB(self.server_config)
+
+        # Wifi status checker
+        self.wifi = WifiStatus()
+
+        # Set up data cache for offline storage
+        self.data_cache = DataCache(self.cache_file)
 
         # Set up connection to OpenWeather
         self.openweather = OpenWeather(self.sample_time, self.openweather_api_key, self.openweather_location_key)
@@ -101,12 +113,29 @@ class Monitor(object):
         logging.info('Cleanup complete.')
 
     def run_loop(self, loop):
+        # If using wifi, check signal strength and quality
+        signal, quality = self.wifi.get_status()
+        logging.debug(f"Loop {loop}: WiFi signal={signal}, quality={quality}")
+        if signal is not None and signal < self.signal_warn_threshold:
+            logging.warning(f"⚠️ Weak WiFi Signal: {signal} dBm")
+        if quality is not None and quality < self.quality_warn_threshold:
+            logging.warning(f"⚠️ Poor WiFi Link Quality: {quality}%")
+
+        # Fetch data from sensors and write to InfluxDB or cache
         for sensor in [self.openweather, self.bme680, self.sds011, self.pir]:
             data = sensor.get_data(loop)
             if sensor == self.openweather:
                 self.bme680.current_pressure = self.openweather.pressure
-            if data:
-                self.influx.write(**data)
+            if self.wifi.is_connected():
+                try:
+                    self.cache.flush(self.flush_limit, self.influx.write)
+                    self.influx.write(**data)
+                except Exception as e:
+                    logging.warning("⚠️ Influx write failed, caching: %s", e)
+                    self.cache.append(data)
+            else:
+                logging.warning("❌ Offline: data cached.")
+                self.cache.append(data)
 
     def start(self, duration_minutes=None):
         logging.info('Started monitor loop')
