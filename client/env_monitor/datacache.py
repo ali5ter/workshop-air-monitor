@@ -11,13 +11,18 @@ class DataCache:
     def __init__(self, cache_file=None):
         self.cache_file = cache_file
         self.buffer = self._load_cache()
+        logging.debug(f"Cache initialized with {len(self.buffer)} items.")
+        logging.debug(f"Cache content: {list(self.buffer)}")
 
     def _load_cache(self):
         if not os.path.exists(self.cache_file):
             logging.info("ℹ️ Cache file not found. Starting with empty buffer.")
             return deque()
         try:
+            logging.debug(f"Loading cache from {self.cache_file}")
             with open(self.cache_file, "r") as f:
+                logging.debug("Cache file loaded successfully.")
+                logging.debug(f"Cache content: {f.read()}")
                 return deque(json.load(f))
         except Exception as e:
             logging.warning(f"⚠️ Failed to load cache: {e}. Starting fresh.")
