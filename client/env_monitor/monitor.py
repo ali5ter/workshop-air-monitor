@@ -19,7 +19,7 @@ from memory_profiler import memory_usage
 class Monitor(object):
 
     def __init__(self, loglevel='INFO', openweather_api_key=None, openweather_location_key=None,
-                 pir_sensor_gpio_pin=None, server_config=None, cache_file=None):
+                 pir_sensor_gpio_pin=None, server_config=None, cache_file=None, cache_flush_limit=None):
 
         # The log level for the monitor
         self.setup_logging(loglevel=loglevel)
@@ -44,6 +44,10 @@ class Monitor(object):
         self.cache_file = cache_file
         logging.debug(f"Cache file set: {cache_file}")
 
+        # The number of items to keep in memory before flushing to disk
+        self.cache_flush_limit = cache_flush_limit
+        logging.debug(f"Cache flush limit set: {self.cache_flush_limit}")
+
         # The number of seconds to delay at the end of each sample loop
         self.loop_delay = 5
 
@@ -65,7 +69,7 @@ class Monitor(object):
         self.quality_warn_threshold = 40  # percentage
 
         # Set up data cache for offline storage
-        self.data_cache = DataCache(self.cache_file)
+        self.data_cache = DataCache(self.cache_file, self.cache_flush_limit)
 
         # Set up connection to OpenWeather
         self.openweather = OpenWeather(self.sample_time, self.openweather_api_key, self.openweather_location_key)

@@ -32,6 +32,12 @@ if __name__ == '__main__':
         help='Path to the cache file (optional, defined in .env file)'
     )
     all_args.add_argument(
+        '--cache-flush-limit',
+        type=int,
+        default=int(os.getenv('CACHE_FLUSH_LIMIT', 10)),
+        help='Number of items to keep in memory before flushing to disk (optional, defined in .env file, default is 10)'
+    )
+    all_args.add_argument(
         '--openweather-api-key',
         type=str,
         default=os.getenv('OPENWEATHER_API_KEY'),
@@ -67,5 +73,6 @@ if __name__ == '__main__':
                       openweather_location_key=args['openweather_location_key'],
                       pir_sensor_gpio_pin=args['pir_sensor_gpio_pin'],
                       server_config=args['server_config'],
-                      cache_file=args['cache_file'])
+                      cache_file=args['cache_file'],
+                      cache_flush_limit=args['cache_flush_limit'])
     monitor.start(duration_minutes=args['duration'])
