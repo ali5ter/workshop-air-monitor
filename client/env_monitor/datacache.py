@@ -8,7 +8,7 @@ from collections import deque
 import logging
 
 class DataCache:
-    def __init__(self, cache_file="/home/pi/data_cache.json"):
+    def __init__(self, cache_file=None):
         self.cache_file = cache_file
         self.buffer = self._load_cache()
 
