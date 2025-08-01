@@ -130,14 +130,14 @@ class Monitor(object):
                 self.bme680.current_pressure = self.openweather.pressure
             if self.wifi.is_connected():
                 try:
-                    self.cache.flush(self.flush_limit, self.influx.write)
+                    self.data_cache.flush(self.flush_limit, self.influx.write)
                     self.influx.write(**data)
                 except Exception as e:
                     logging.warning("⚠️ Influx write failed, caching: %s", e)
-                    self.cache.append(data)
+                    self.data_cache.append(data)
             else:
                 logging.warning("❌ Offline: data cached.")
-                self.cache.append(data)
+                self.data_cache.append(data)
 
     def start(self, duration_minutes=None):
         logging.info('Started monitor loop')
