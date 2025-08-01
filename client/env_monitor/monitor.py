@@ -69,7 +69,8 @@ class Monitor(object):
         self.quality_warn_threshold = 40  # percentage
 
         # Set up data cache for offline storage
-        self.data_cache = DataCache(self.cache_file, self.cache_flush_limit)
+        self.data_cache = DataCache(self.cache_file)
+        self.flush_limit = self.cache_flush_limit 
 
         # Set up connection to OpenWeather
         self.openweather = OpenWeather(self.sample_time, self.openweather_api_key, self.openweather_location_key)
