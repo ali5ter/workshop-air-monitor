@@ -36,10 +36,15 @@ class DataCache:
             logging.error(f"❌ Failed to save cache: {e}")
 
     def flush(self, flush_limit, write_func):
+        logging.debug(f"Flushing cache with limit {flush_limit}")
+        logging.debug(f"Cache size before flush: {len(self.buffer)}")
         if len(self.buffer) >= flush_limit:
             to_write = list(self.buffer)
+            logging.debug(f"Items to write: {len(to_write)}")
+            logging.debug(f"Writing items to InfluxDB: {to_write}")
             try:
                 for item in to_write:
+                    logging.debug(f"Writing item: {item}")
                     write_func(**item)
                 self.buffer.clear()
                 self._save_cache()
