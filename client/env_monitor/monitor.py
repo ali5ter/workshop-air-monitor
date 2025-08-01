@@ -12,7 +12,7 @@ from .influx import InfluxDB
 from .bme680 import BME680
 from .pir import PIR
 from .sds011 import SDS011
-from .wificheck import WifiStatus
+from .wifistatus import WifiStatus
 from .datacache import DataCache
 from memory_profiler import memory_usage
 
@@ -61,6 +61,8 @@ class Monitor(object):
 
         # Wifi status checker
         self.wifi = WifiStatus()
+        self.signal_warn_threshold = -75  # dBm
+        self.quality_warn_threshold = 40  # percentage
 
         # Set up data cache for offline storage
         self.data_cache = DataCache(self.cache_file)

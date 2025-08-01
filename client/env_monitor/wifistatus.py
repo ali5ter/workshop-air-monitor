@@ -1,4 +1,4 @@
-# @file: wificheck.py
+# @file: wifistatus.py
 # @brief: WiFi status checker for monitoring signal strength and quality
 # @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
 
