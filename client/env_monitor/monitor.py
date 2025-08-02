@@ -133,19 +133,20 @@ class Monitor(object):
         for sensor in [self.openweather, self.bme680, self.sds011, self.pir]:
             logging.debug(f"Fetching data from {sensor.__class__.__name__}")
             data = sensor.get_data(loop)
-            logging.debug(f"Data fetched: {data}")
-            if sensor == self.openweather:
-                self.bme680.callibrate(self.openweather.pressure)
-            if self.network.is_connected():
-                try:
-                    self.data_cache.flush(self.flush_limit, self.influx.write)
-                    # self.influx.write(**data)
-                except Exception as e:
-                    # logging.warning("⚠️ Influx write failed, caching: %s", e)
+            # Not all sensors return data on every loop, so check if data is None
+            if data is not None:
+                if sensor == self.openweather:
+                    self.bme680.callibrate(self.openweather.pressure)
+                if self.network.is_connected():
+                    try:
+                        self.data_cache.flush(self.flush_limit, self.influx.write)
+                        self.influx.write(**data)
+                    except Exception as e:
+                        logging.warning("⚠️ Influx write failed, caching: %s", e)
+                        self.data_cache.append(data)
+                else:
+                    logging.warning("❌ Offline: data cached.")
                     self.data_cache.append(data)
-            else:
-                logging.warning("❌ Offline: data cached.")
-                # self.data_cache.append(data)
 
     def start(self, duration_minutes=None):
         loop = 0
