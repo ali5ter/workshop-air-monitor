@@ -16,7 +16,7 @@ class DataCache:
 
     def _load_cache(self):
         if not os.path.exists(self.cache_file):
-            logging.info("ℹ️ Cache file not found. Starting with empty buffer.")
+            logging.info("Cache file not found. Starting with empty buffer.")
             return deque()
         try:
             logging.debug(f"Loading cache from {self.cache_file}")
@@ -25,7 +25,7 @@ class DataCache:
                 logging.debug(f"Cache content: {f.read()}")
                 return deque(json.load(f))
         except Exception as e:
-            logging.warning(f"⚠️ Failed to load cache: {e}. Starting fresh.")
+            logging.warning(f"Failed to load cache: {e}. Starting fresh.")
             return deque()
 
     def append(self, item):
@@ -38,7 +38,7 @@ class DataCache:
             with open(self.cache_file, "w") as f:
                 json.dump(list(self.buffer), f)
         except Exception as e:
-            logging.error(f"❌ Failed to save cache: {e}")
+            logging.error(f"Failed to save cache: {e}")
 
     def flush(self, flush_limit, write_func):
         if len(self.buffer) >= flush_limit:
@@ -50,8 +50,8 @@ class DataCache:
                     write_func(**item)
                 self.buffer.clear()
                 self._save_cache()
-                logging.info(f"✅ Flushed {len(to_write)} cached items to Influx.")
+                logging.info(f"Flushed {len(to_write)} cached items to Influx.")
             except Exception as e:
-                logging.warning(f"⚠️ Flush failed: {e}. Cache retained.")
+                logging.warning(f"Flush failed: {e}. Cache retained.")
         else:
             logging.debug(f"Cache size {len(self.buffer)} is below flush limit {flush_limit}. No action taken.")

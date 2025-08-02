@@ -15,6 +15,7 @@ from .sensors.bme680 import BME680
 from .sensors.pir import PIR
 from .sensors.sds011 import SDS011
 from memory_profiler import memory_usage
+from rich.logging import RichHandler
 
 class Monitor(object):
 
@@ -100,7 +101,8 @@ class Monitor(object):
             encoding='utf-8',
             format='%(asctime)s::%(levelname)s::%(message)s',
             datefmt='%m/%d/%Y %I:%M:%S %p',
-            level=numeric_level
+            level=numeric_level,
+            handlers=[RichHandler(rich_tracebacks=True)]
         )
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
         logging.info(f"Logging initialized at level: {loglevel}")
@@ -125,9 +127,9 @@ class Monitor(object):
         # If using network, check signal strength and quality
         signal, quality = self.network.get_wifi_status()
         if signal is not None and signal < self.signal_warn_threshold:
-            logging.warning(f"⚠️ Weak WiFi Signal: {signal} dBm")
+            logging.warning(f"Weak WiFi Signal: {signal} dBm")
         if quality is not None and quality < self.quality_warn_threshold:
-            logging.warning(f"⚠️ Poor WiFi Link Quality: {quality}%")
+            logging.warning(f"Poor WiFi Link Quality: {quality}%")
 
         # Fetch data from sensors and write to InfluxDB or cache
         for sensor in [self.openweather, self.bme680, self.sds011, self.pir]:
@@ -142,10 +144,10 @@ class Monitor(object):
                         self.data_cache.flush(self.flush_limit, self.influx.write)
                         self.influx.write(**data)
                     except Exception as e:
-                        logging.warning("⚠️ Influx write failed, caching: %s", e)
+                        logging.warning("Influx write failed, caching: %s", e)
                         self.data_cache.append(data)
                 else:
-                    logging.warning("❌ Offline: data cached.")
+                    logging.warning("Offline: data cached.")
                     self.data_cache.append(data)
 
     def start(self, duration_minutes=None):
@@ -153,7 +155,7 @@ class Monitor(object):
         start_time = time.time()
         max_duration = duration_minutes * 60 if duration_minutes else None
 
-        logging.info(f'[Loop: {loop}] Started monitor loop')
+        logging.info(f'Started monitor loop')
 
         try:
             while self.running:
