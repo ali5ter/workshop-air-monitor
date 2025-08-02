@@ -133,6 +133,7 @@ class Monitor(object):
         for sensor in [self.openweather, self.bme680, self.sds011, self.pir]:
             logging.debug(f"Fetching data from {sensor.__class__.__name__}")
             data = sensor.get_data(loop)
+            logging.debug(f"Data fetched: {data}")
             if sensor == self.openweather:
                 self.bme680.callibrate(self.openweather.pressure)
             if self.network.is_connected():
