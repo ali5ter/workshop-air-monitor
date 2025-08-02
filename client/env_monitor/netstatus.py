@@ -8,7 +8,7 @@ import subprocess
 import re
 import shutil
 import os
-
+import socket
 
 class NetworkStatus:
 
@@ -74,9 +74,10 @@ class NetworkStatus:
 
     def is_connected(self):
         host = "8.8.8.8"
-        count_flag = "-c" if self.system != "Windows" else "-n"
+        port = 53
+        timeout = 2
         try:
-            result = subprocess.run(["ping", count_flag, "1", "-W", "2", host], stdout=subprocess.DEVNULL)
-            return result.returncode == 0
-        except Exception:
+            socket.create_connection((host, port), timeout)
+            return True
+        except OSError:
             return False
