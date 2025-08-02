@@ -12,7 +12,6 @@ class PIR(object):
 
         # THE GPIO pin to use as the PIR sensor digital input
         self.input_pin = getattr(board, pir_sensor_gpio_pin)
-        logging.debug(f"PIR sensor GPIO pin set: {self.input_pin}")
 
         # The number of loops after which to fetch sensor data
         self.sample_time = sample_time

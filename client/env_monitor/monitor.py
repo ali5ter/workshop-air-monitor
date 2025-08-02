@@ -124,7 +124,6 @@ class Monitor(object):
     def run_loop(self, loop):
         # If using network, check signal strength and quality
         signal, quality = self.network.get_wifi_status()
-        logging.debug(f"Loop {loop}: WiFi signal={signal}, quality={quality}")
         if signal is not None and signal < self.signal_warn_threshold:
             logging.warning(f"⚠️ Weak WiFi Signal: {signal} dBm")
         if quality is not None and quality < self.quality_warn_threshold:
@@ -132,9 +131,10 @@ class Monitor(object):
 
         # Fetch data from sensors and write to InfluxDB or cache
         for sensor in [self.openweather, self.bme680, self.sds011, self.pir]:
+            logging.debug(f"Fetching data from {sensor.__class__.__name__} at loop {loop}")
             data = sensor.get_data(loop)
             if sensor == self.openweather:
-                self.bme680.current_pressure = self.openweather.pressure
+                self.bme680.callibrate(self.openweather.pressure)
             if self.network.is_connected():
                 try:
                     self.data_cache.flush(self.flush_limit, self.influx.write)
