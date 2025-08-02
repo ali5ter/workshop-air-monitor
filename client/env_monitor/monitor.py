@@ -96,15 +96,26 @@ class Monitor(object):
         if not isinstance(numeric_level, int):
             raise ValueError(f"Invalid log level: {loglevel}")
         
-        logging.basicConfig(
-            filename='env_monitor.log',
-            encoding='utf-8',
-            format='%(asctime)s::%(levelname)s::%(message)s',
-            datefmt='%m/%d/%Y %I:%M:%S %p',
-            level=numeric_level,
-            handlers=[RichHandler(rich_tracebacks=True)]
-        )
-        logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+        # Create a RichHandler for console output
+        console_handler = RichHandler(rich_tracebacks=True)
+        console_handler.setLevel(numeric_level)
+        console_handler.setFormatter(logging.Formatter(
+            "%(message)s", datefmt="%m/%d/%Y %I:%M:%S %p"))
+
+        # Create a FileHandler for writing to file
+        file_handler = logging.FileHandler('env_monitor.log', encoding='utf-8')
+        file_handler.setLevel(numeric_level)
+        file_handler.setFormatter(logging.Formatter(
+            "%(asctime)s::%(levelname)s::%(message)s",
+            datefmt="%m/%d/%Y %I:%M:%S %p"))
+
+        # Get root logger and attach both handlers
+        logger = logging.getLogger()
+        logger.setLevel(numeric_level)
+        logger.handlers = []  # Remove default handlers if re-running
+        logger.addHandler(console_handler)
+        logger.addHandler(file_handler)
+        
         logging.info(f"Logging initialized at level: {loglevel}")
 
     def handle_exit(self, signum, frame):
