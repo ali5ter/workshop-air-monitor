@@ -32,6 +32,7 @@ class PIR(object):
         if loop % self.sample_time == 0:
 
             self.sample_count += 1
+            logging.info(f"[{loop}] Fetching PIR sensor data")
             motion = 0
 
             self.current_value = self.sensor.value

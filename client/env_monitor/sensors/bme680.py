@@ -45,7 +45,7 @@ class BME680(object):
         if loop % self.sample_time == 0:
 
             self.sample_count += 1
-            logging.info('[%d] Fetching BME680 sensor data', loop)
+            logging.info(f"[{loop}] Fetching BME680 sensor data")
 
             tempC = self.sensor.temperature + self.bme680_temp_offset
             tempF = (tempC * 1.8) + 32

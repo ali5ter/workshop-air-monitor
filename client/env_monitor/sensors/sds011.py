@@ -35,7 +35,7 @@ class SDS011(object):
         if loop % self.sample_time == 0:
 
             self.sample_count += 1
-            logging.info('[%d] Fetching SDS011 sensor data', loop)
+            logging.info(f"[{loop}] Fetching SDS011 sensor data")
 
             data = []
             for index in range(0,10):
