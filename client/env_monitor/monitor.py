@@ -138,7 +138,7 @@ class Monitor(object):
             if self.network.is_connected():
                 try:
                     self.data_cache.flush(self.flush_limit, self.influx.write)
-                    self.influx.write(**data)
+                    # self.influx.write(**data)
                 except Exception as e:
                     logging.warning("⚠️ Influx write failed, caching: %s", e)
                     # self.data_cache.append(data)
