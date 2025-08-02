@@ -9,11 +9,11 @@ import signal
 
 from .openweather import OpenWeather
 from .influx import InfluxDB
-from .bme680 import BME680
-from .pir import PIR
-from .sds011 import SDS011
 from .netstatus import NetworkStatus
 from .datacache import DataCache
+from .sensors.bme680 import BME680
+from .sensors.pir import PIR
+from .sensors.sds011 import SDS011
 from memory_profiler import memory_usage
 
 class Monitor(object):

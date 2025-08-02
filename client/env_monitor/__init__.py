@@ -6,6 +6,6 @@
 
 from .monitor import Monitor
 from .openweather import OpenWeather
-from .sds011 import SDS011
-from .bme680 import BME680
-from .pir import PIR
+from .sensors.sds011 import SDS011
+from .sensors.bme680 import BME680
+from .sensors.pir import PIR
