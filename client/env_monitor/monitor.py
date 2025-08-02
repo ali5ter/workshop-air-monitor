@@ -140,8 +140,8 @@ class Monitor(object):
                     self.data_cache.flush(self.flush_limit, self.influx.write)
                     # self.influx.write(**data)
                 except Exception as e:
-                    logging.warning("⚠️ Influx write failed, caching: %s", e)
-                    # self.data_cache.append(data)
+                    # logging.warning("⚠️ Influx write failed, caching: %s", e)
+                    self.data_cache.append(data)
             else:
                 logging.warning("❌ Offline: data cached.")
                 # self.data_cache.append(data)
