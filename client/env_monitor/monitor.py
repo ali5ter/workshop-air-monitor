@@ -131,7 +131,7 @@ class Monitor(object):
 
         # Fetch data from sensors and write to InfluxDB or cache
         for sensor in [self.openweather, self.bme680, self.sds011, self.pir]:
-            logging.debug(f"Fetching data from {sensor.__class__.__name__} at loop {loop}")
+            logging.debug(f"Fetching data from {sensor.__class__.__name__}")
             data = sensor.get_data(loop)
             if sensor == self.openweather:
                 self.bme680.callibrate(self.openweather.pressure)
@@ -147,10 +147,11 @@ class Monitor(object):
                 # self.data_cache.append(data)
 
     def start(self, duration_minutes=None):
-        logging.info('Started monitor loop')
         loop = 0
         start_time = time.time()
         max_duration = duration_minutes * 60 if duration_minutes else None
+
+        logging.info(f'[Loop: {loop}] Started monitor loop')
 
         try:
             while self.running:

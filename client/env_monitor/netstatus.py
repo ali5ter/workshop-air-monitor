@@ -9,6 +9,7 @@ import re
 import shutil
 import os
 import socket
+import logging
 
 class NetworkStatus:
 
@@ -22,12 +23,12 @@ class NetworkStatus:
         elif self.system == "Darwin":
             return self._get_darwin_status()
         else:
-            print(f"WiFiStatus: Unsupported system: {self.system}")
+            logging.warning(f"WiFiStatus: Unsupported system: {self.system}")
             return None, None
 
     def _get_linux_status(self):
         if shutil.which("iwconfig") is None:
-            print("iwconfig not found. Install wireless-tools.")
+            logging.warning("iwconfig not found. Install wireless-tools.")
             return None, None
 
         try:
@@ -48,14 +49,14 @@ class NetworkStatus:
             return signal, quality
 
         except Exception as e:
-            print(f"[Linux] Failed to get WiFi status: {e}")
+            logging.error(f"[Linux] Failed to get WiFi status: {e}")
             return None, None
 
     def _get_darwin_status(self):
         airport_path = "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport"
 
         if not os.path.exists(airport_path):
-            print("airport utility not found on macOS")
+            logging.warning("airport utility not found on macOS")
             return None, None
 
         try:
@@ -69,7 +70,7 @@ class NetworkStatus:
             return signal, None
 
         except Exception as e:
-            print(f"[Darwin] Failed to get WiFi status: {e}")
+            logging.error(f"[Darwin] Failed to get WiFi status: {e}")
             return None, None
 
     def is_connected(self):
