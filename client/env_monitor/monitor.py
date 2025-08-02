@@ -12,7 +12,7 @@ from .influx import InfluxDB
 from .bme680 import BME680
 from .pir import PIR
 from .sds011 import SDS011
-from .wifistatus import WifiStatus
+from .netstatus import NetworkStatus
 from .datacache import DataCache
 from memory_profiler import memory_usage
 
@@ -63,8 +63,10 @@ class Monitor(object):
         # Set up connection to InfluxDB
         self.influx = InfluxDB(self.server_config)
 
-        # Wifi status checker
-        self.wifi = WifiStatus()
+        # Network status checker
+        self.network = NetworkStatus()
+        # Hardcoded thresholds for signal strength and quality
+        # because these are common values for WiFi networks
         self.signal_warn_threshold = -75  # dBm
         self.quality_warn_threshold = 40  # percentage
 
@@ -120,8 +122,8 @@ class Monitor(object):
         logging.info('Cleanup complete.')
 
     def run_loop(self, loop):
-        # If using wifi, check signal strength and quality
-        signal, quality = self.wifi.get_status()
+        # If using network, check signal strength and quality
+        signal, quality = self.network.get_wifi_status()
         logging.debug(f"Loop {loop}: WiFi signal={signal}, quality={quality}")
         if signal is not None and signal < self.signal_warn_threshold:
             logging.warning(f"⚠️ Weak WiFi Signal: {signal} dBm")
@@ -133,7 +135,7 @@ class Monitor(object):
             data = sensor.get_data(loop)
             if sensor == self.openweather:
                 self.bme680.current_pressure = self.openweather.pressure
-            if self.wifi.is_connected():
+            if self.network.is_connected():
                 try:
                     self.data_cache.flush(self.flush_limit, self.influx.write)
                     self.influx.write(**data)

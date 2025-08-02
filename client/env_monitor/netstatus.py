@@ -1,5 +1,6 @@
-# @file: wifistatus.py
-# @brief: WiFi status checker for monitoring signal strength and quality
+# @file: netstatus.py
+# @brief: Network status checker for monitoring wifi signal strength, quality
+# and connectivity.
 # @author: Alister Lewis-Bowen <alister@lewis-bowen.org>
 
 import platform
@@ -9,21 +10,13 @@ import shutil
 import os
 
 
-class WifiStatus:
-    """
-    Cross-platform WiFi status utility for Linux and macOS.
-
-    get_status(): returns (signal_dBm, quality_percent)
-    is_connected(): returns True/False based on ping to 8.8.8.8
-    """
+class NetworkStatus:
 
     def __init__(self, interface="wlan0"):
         self.interface = interface
         self.system = platform.system()
 
-    def get_status(self):
-        """Return (signal_dBm, quality_percent or None)."""
-        
+    def get_wifi_status(self):
         if self.system == "Linux":
             return self._get_linux_status()
         elif self.system == "Darwin":
@@ -80,8 +73,6 @@ class WifiStatus:
             return None, None
 
     def is_connected(self):
-        """Ping 8.8.8.8 to verify network access."""
-
         host = "8.8.8.8"
         count_flag = "-c" if self.system != "Windows" else "-n"
         try:
