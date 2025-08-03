@@ -35,14 +35,18 @@ class BME680(object):
         # Connect to the BME680 sensor
         self.sensor = adafruit_bme680.Adafruit_BME680_I2C(board.I2C(), debug=False)
 
+    def callibrate(self, pressure):
+        self.current_pressure = pressure
+        self.sensor.sea_level_pressure = pressure
+        logging.debug(f"BME680 sea level pressure set to {pressure} hPa")
+
     def get_data(self, loop):
 
         if loop % self.sample_time == 0:
 
             self.sample_count += 1
-            logging.info('[%d] Fetching BME680 sensor data', loop)
+            logging.info(f"[{loop}] Fetching BME680 sensor data")
 
-            self.sensor.sea_level_pressure = self.current_pressure  # Calibrate BME680
             tempC = self.sensor.temperature + self.bme680_temp_offset
             tempF = (tempC * 1.8) + 32
             gas = self.sensor.gas

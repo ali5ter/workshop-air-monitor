@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
-class INFLUX(object):
+class InfluxDB(object):
 
     def __init__(self, server_config=None):
 

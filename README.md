@@ -18,7 +18,7 @@ Inspired by [this article](https://www.raspberrypi.com/news/monitor-air-quality-
 
 Using [the SDS011 sensor](https://microcontrollerslab.com/wp-content/uploads/2020/12/NonA-PM-SDS011-Dust-sensor-datasheet.pdf) I could collect data on two standard sizes of particulate matter (PM). According to [the Air Quality Standards in my area](https://www3.epa.gov/region1/airquality/pm-aq-standards.html), the 10 micron particles (PM<sub>10</sub>) should not exceed 150 micrograms per cubic meter (μg/m3) based on a 24-hour average. Similarly, the small nasty stuff that can really hurt you, the 2.5 micron particles (PM<sub>2.5</sub>) should not exceed 35 micrograms per cubic meter (μg/m3) based on a 24-hour average.
 
-The client code for the SDS011 sensor is [sds011.py](client/env_monitor/sds011.py).
+The client code for the SDS011 sensor is [sds011.py](client/env_monitor/sensors/sds011.py).
 
 ### Temperature, humidity, pressure and gas
 
@@ -26,7 +26,7 @@ Adafruit sell [the amazing BME680](https://learn.adafruit.com/adafruit-bme680-hu
 
 I took advantage of the adafruit_blinka python library to use the CircuitPython hardware API that talks I2C and SPI protocols that sensors often use. Adafruit [explains this and how to install this lib onto your Linux SBC](https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi). As explained below, I provide a script to install the nessesary sensor support.
 
-The client code for the BME680 sensor is [bme680.py](client/env_monitor/bme680.py).
+The client code for the BME680 sensor is [bme680.py](client/env_monitor/sensors/bme680.py).
 
 I wanted a way to compare against current weather conditions, so used [the OpenWeather service](https://openweathermap.org) to fetch data for my location. You can get an API key for free and while you're limited to 60 calls/minute, that's more than enough. The path of where you stored your key and the OpenWeather location name is configured in the [.env](client/.env).
 
@@ -36,7 +36,7 @@ The client code for communicating with the OpenWeather service is [openweather.p
 
 I chose to use [the Pyroelectric ("Passive") InfraRed Sensor from Adafruit](https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor) to understand if someone was in the workshop. I figured that would be good to cross reference with environmental changes but also wanted a way to trigger a camera to at least understand who was in there... who's not been putting tools back in the right place and all that.
 
-The client code for the PIR sensor is [pir.py](client/env_monitor/pir.py).
+The client code for the PIR sensor is [pir.py](client/env_monitor/sensors/pir.py).
 
 ## Server side
 
@@ -118,3 +118,15 @@ Start and stop using
 ```bash
 sudo systemctl [start|stop] env_monitor.service
 ```
+
+### Logging
+
+Logs are written to the log file location defined in the client/.env configuration. The [.env.template](client/.env.template) file shows an example of this definition.
+
+When running the monitor application as a daemon, `systemd` manages logging, and you can use the `journalctl` command to access the logs.
+
+### Caching
+
+If the network connection goes down and data cannot be written to InfluxDB, the monitor application will cache the data locally. When the connection is restored, the cached data will be written to InfluxDB.
+
+The location of the cache file and the flush limit (number of items to keep in memory before flushing to to the cache file) are defined in the client/.env configuration. The [.env.template](client/.env.template) file shows an example of this definition.

@@ -56,7 +56,7 @@ class OpenWeather(object):
 
         if (loop-1) % self.sample_time == 0:
             try:
-                logging.info('[%d] Fetching current weather conditions', loop)
+                logging.info(f"[{loop}] Fetching current weather conditions")
                 r = requests.get(self.conditions_method, timeout=10)
                 r.raise_for_status()
             except HTTPError as http_err:

@@ -32,6 +32,9 @@ sudo pip3 install pyserial --break-system-packages
 # Install memory-profiler for monitoring memory usage
 sudo pip3 install memory-profiler --break-system-packages
 
+# Install RichHandler for better logging output
+sudo pip3 install rich --break-system-packages
+
 # Install python dotenv for environment variable management
 sudo pip3 install python-dotenv --break-system-packages
 
