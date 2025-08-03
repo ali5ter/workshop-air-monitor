@@ -24,7 +24,7 @@ class Monitor(object):
                  cache_file=None, cache_flush_limit=None):
 
         # The log level for the monitor
-        self.setup_logging(loglevel=loglevel)
+        self.setup_logging(loglevel=loglevel, log_file=log_file)
 
         # The API key for OpenWeather
         self.openweather_api_key = openweather_api_key
@@ -41,10 +41,6 @@ class Monitor(object):
         # The server configuration file path
         self.server_config = server_config
         logging.debug(f"Server configuration file set: {server_config}")
-
-        # The log file path for writing logs
-        self.log_file = log_file
-        logging.debug(f"Log file set: {log_file}")
 
         # The cache file path for storing monitor data when offline
         self.cache_file = cache_file
@@ -96,7 +92,7 @@ class Monitor(object):
         signal.signal(signal.SIGINT, self.handle_exit)
         signal.signal(signal.SIGTERM, self.handle_exit)
 
-    def setup_logging(self, loglevel='INFO'):
+    def setup_logging(self, loglevel='INFO', log_file=None):
         numeric_level = getattr(logging, loglevel.upper(), None)
         if not isinstance(numeric_level, int):
             raise ValueError(f"Invalid log level: {loglevel}")
@@ -108,7 +104,7 @@ class Monitor(object):
             "%(message)s", datefmt="%m/%d/%Y %I:%M:%S %p"))
 
         # Create a FileHandler for writing to file
-        file_handler = logging.FileHandler(self.log_file, encoding='utf-8')
+        file_handler = logging.FileHandler(log_file, encoding='utf-8')
         file_handler.setLevel(numeric_level)
         file_handler.setFormatter(logging.Formatter(
             "%(asctime)s::%(levelname)s::%(message)s",
