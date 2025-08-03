@@ -6,6 +6,7 @@ import json
 import os
 from collections import deque
 import logging
+import tempfile
 
 class DataCache:
     def __init__(self, cache_file=None):
@@ -21,9 +22,12 @@ class DataCache:
         try:
             logging.debug(f"Loading cache from {self.cache_file}")
             with open(self.cache_file, "r") as f:
-                logging.debug("Cache file loaded successfully.")
-                logging.debug(f"Cache content: {f.read()}")
-                return deque(json.load(f))
+                content = f.read().strip()
+                if not content:
+                    raise ValueError("Cache file is empty")
+                data = json.loads(content)
+                logging.debug(f"Cache content: {data}")
+                return deque(data)
         except Exception as e:
             logging.warning(f"Failed to load cache: {e}. Starting fresh.")
             return deque()
@@ -35,8 +39,11 @@ class DataCache:
     def _save_cache(self):
         try:
             os.makedirs(os.path.dirname(self.cache_file), exist_ok=True)
-            with open(self.cache_file, "w") as f:
-                json.dump(list(self.buffer), f)
+            dirpath = os.path.dirname(self.cache_file)
+            with tempfile.NamedTemporaryFile("w", delete=False, dir=dirpath) as tf:
+                json.dump(list(self.buffer), tf)
+                tempname = tf.name
+            os.replace(tempname, self.cache_file)
         except Exception as e:
             logging.error(f"Failed to save cache: {e}")
 
