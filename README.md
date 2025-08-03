@@ -118,3 +118,15 @@ Start and stop using
 ```bash
 sudo systemctl [start|stop] env_monitor.service
 ```
+
+### Logging
+
+Logs are written to the log file location defined in the client/.env configuration. The [.env.template](client/.env.template) file shows an example of this definition.
+
+When running the monitor application as a daemon, `systemd` manages logging, and you can use the `journalctl` command to access the logs.
+
+### Caching
+
+If the network connection goes down and data cannot be written to InfluxDB, the monitor application will cache the data locally. When the connection is restored, the cached data will be written to InfluxDB.
+
+The location of the cache file and the flush limit (number of items to keep in memory before flushing to to the cache file) are defined in the client/.env configuration. The [.env.template](client/.env.template) file shows an example of this definition.

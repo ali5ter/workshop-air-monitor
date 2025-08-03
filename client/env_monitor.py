@@ -26,6 +26,12 @@ if __name__ == '__main__':
         help='Path to the server configuration file (optional, defined in .env file)'
     )
     all_args.add_argument(
+        '--logfile',
+        type=str,
+        default=os.getenv('LOG_FILE'),
+        help='Path to the log file (optional, defined in .env file)'
+    )
+    all_args.add_argument(
         '--cache-file',
         type=str,
         default=os.getenv('CACHE_FILE'),
@@ -74,5 +80,6 @@ if __name__ == '__main__':
                       pir_sensor_gpio_pin=args['pir_sensor_gpio_pin'],
                       server_config=args['server_config'],
                       cache_file=args['cache_file'],
-                      cache_flush_limit=args['cache_flush_limit'])
+                      cache_flush_limit=args['cache_flush_limit'],
+                      log_file=args['logfile'])
     monitor.start(duration_minutes=args['duration'])

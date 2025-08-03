@@ -20,7 +20,8 @@ from rich.logging import RichHandler
 class Monitor(object):
 
     def __init__(self, loglevel='INFO', openweather_api_key=None, openweather_location_key=None,
-                 pir_sensor_gpio_pin=None, server_config=None, cache_file=None, cache_flush_limit=None):
+                 pir_sensor_gpio_pin=None, server_config=None, log_file=None,
+                 cache_file=None, cache_flush_limit=None):
 
         # The log level for the monitor
         self.setup_logging(loglevel=loglevel)
@@ -40,6 +41,10 @@ class Monitor(object):
         # The server configuration file path
         self.server_config = server_config
         logging.debug(f"Server configuration file set: {server_config}")
+
+        # The log file path for writing logs
+        self.log_file = log_file
+        logging.debug(f"Log file set: {log_file}")
 
         # The cache file path for storing monitor data when offline
         self.cache_file = cache_file
@@ -103,7 +108,7 @@ class Monitor(object):
             "%(message)s", datefmt="%m/%d/%Y %I:%M:%S %p"))
 
         # Create a FileHandler for writing to file
-        file_handler = logging.FileHandler('env_monitor.log', encoding='utf-8')
+        file_handler = logging.FileHandler(self.log_file, encoding='utf-8')
         file_handler.setLevel(numeric_level)
         file_handler.setFormatter(logging.Formatter(
             "%(asctime)s::%(levelname)s::%(message)s",
