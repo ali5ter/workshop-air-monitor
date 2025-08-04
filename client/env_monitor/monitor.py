@@ -140,18 +140,11 @@ class Monitor(object):
 
     def cleanup(self):
         logging.info('Cleaning up resources...')
-        if hasattr(self.sds011, 'close'):
-            self.sds011.close()
-        if hasattr(self.bme680, 'close'):
-            self.bme680.close()
-        if hasattr(self.pir, 'close'):
-            self.pir.close()
-        if hasattr(self.influx, 'close'):
-            self.influx.close()
+        self.influx.close()
         logging.info('Cleanup complete.')
 
     def run_loop(self, loop):
-        # If using network, check signal strength and quality
+        # If using wifi, check signal strength and quality
         signal, quality = self.network.get_wifi_status()
         if signal is not None and signal < self.signal_warn_threshold:
             logging.warning(f"Weak WiFi Signal: {signal} dBm")
@@ -162,8 +155,8 @@ class Monitor(object):
         for sensor in [self.openweather, self.bme680, self.sds011, self.pir]:
             logging.debug(f"Fetching data from {sensor.__class__.__name__}")
             data = sensor.get_data(loop)
-            # Not all sensors return data on every loop, so check if data is None
-            if data is not None:
+            # Not all sensors return data on every loop, so check if there's data
+            if data:
                 if sensor == self.openweather:
                     self.bme680.callibrate(self.openweather.pressure)
                 if self.network.is_connected():
