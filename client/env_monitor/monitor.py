@@ -6,6 +6,7 @@ import time
 import sys
 import logging
 import signal
+import os
 
 from .openweather import OpenWeather
 from .influx import InfluxDB
@@ -92,32 +93,46 @@ class Monitor(object):
         signal.signal(signal.SIGINT, self.handle_exit)
         signal.signal(signal.SIGTERM, self.handle_exit)
 
+    def is_interactive(self):
+        return sys.stdout.isatty() and os.environ.get("TERM") != "headless"
+
     def setup_logging(self, loglevel='INFO', log_file=None):
         numeric_level = getattr(logging, loglevel.upper(), None)
         if not isinstance(numeric_level, int):
             raise ValueError(f"Invalid log level: {loglevel}")
-        
-        # Create a RichHandler for console output
-        console_handler = RichHandler(rich_tracebacks=True)
-        console_handler.setLevel(numeric_level)
-        console_handler.setFormatter(logging.Formatter(
-            "%(message)s", datefmt="%m/%d/%Y %I:%M:%S %p"))
 
-        # Create a FileHandler for writing to file
-        file_handler = logging.FileHandler(log_file, encoding='utf-8')
-        file_handler.setLevel(numeric_level)
-        file_handler.setFormatter(logging.Formatter(
-            "%(asctime)s::%(levelname)s::%(message)s",
-            datefmt="%m/%d/%Y %I:%M:%S %p"))
-
-        # Get root logger and attach both handlers
         logger = logging.getLogger()
         logger.setLevel(numeric_level)
-        logger.handlers = []  # Remove default handlers if re-running
+        logger.handlers = []
+
+        # Decide whether we're in interactive (CLI) mode
+        interactive = self.is_interactive()
+
+        # Console handler: Rich for interactive, plain otherwise
+        if interactive:
+            console_handler = RichHandler(rich_tracebacks=True)
+            console_formatter = logging.Formatter("%(message)s",
+                datefmt="%m/%d/%Y %I:%M:%S %p")
+        else:
+            console_handler = logging.StreamHandler(sys.stdout)
+            console_formatter = logging.Formatter(
+                "%(asctime)s %(levelname)s: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S")
+
+        console_handler.setLevel(numeric_level)
+        console_handler.setFormatter(console_formatter)
         logger.addHandler(console_handler)
-        logger.addHandler(file_handler)
-        
-        logging.info(f"Logging initialized at level: {loglevel}")
+
+        # Only add file handler if interactive
+        if interactive and log_file:
+            file_handler = logging.FileHandler(log_file, encoding='utf-8')
+            file_handler.setLevel(numeric_level)
+            file_handler.setFormatter(logging.Formatter(
+                "%(asctime)s::%(levelname)s::%(message)s",
+                datefmt="%m/%d/%Y %I:%M:%S %p"))
+            logger.addHandler(file_handler)
+
+        logging.info(f"Logging initialized at level: {loglevel}, interactive={interactive}")
 
     def handle_exit(self, signum, frame):
         logging.info(f"Signal {signum} received. Exiting gracefully.")
