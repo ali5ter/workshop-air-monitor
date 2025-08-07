@@ -22,7 +22,7 @@ set -eou pipefail
 #   - Receiver VCC pin connected to 3.3V (pin 1)
 #   - Receiver GND pin connected to GND (pin 6)
 
-if ! command -v ir-record &> /dev/null; then
+if ! command -v irrecord &> /dev/null; then
     echo "📦 LIRC (Linux Infrared Remote Control) is not installed. Installing..."
     sudo apt-get install lirc --no-install-recommends
 fi
