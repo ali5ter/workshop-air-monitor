@@ -22,20 +22,20 @@ set -eou pipefail
 #   - Receiver VCC pin connected to 3.3V (pin 1)
 #   - Receiver GND pin connected to GND (pin 6)
 
-if ! command -v ir-keytable &> /dev/null; then
+if ! command -v ir-record &> /dev/null; then
     echo "📦 LIRC (Linux Infrared Remote Control) is not installed. Installing..."
     sudo apt-get install lirc --no-install-recommends
 fi
 
-if ! grep -q "dtoverlay=gpio-ir" /boot/config.txt; then
+if ! grep -q "dtoverlay=gpio-ir" /boot/firmware/config.txt; then
     echo "🔧 Configuring LIRC for GPIO pin 18..."
-    echo "dtoverlay=gpio-ir,gpio_pin=18" | sudo tee -a /boot/config.txt
+    echo "dtoverlay=gpio-ir,gpio_pin=18" | sudo tee -a /boot/firmware/config.txt
     echo "❌ Run 'sudo reboot' to apply changes. Then come back to this script to record IR signals."
     exit 0
 else
     echo "🔧 LIRC is already configured for GPIO pin 18."
 fi
-# echo "dtoverlay=gpio-ir-tx,gpio_pin=17" >> /boot/config.txt
+# echo "dtoverlay=gpio-ir-tx,gpio_pin=17" >> /boot/firmware/config.txt
 
 echo "📦 Configuring LIRC for IR signal capture..."
 sudo systemctl enable lircd
